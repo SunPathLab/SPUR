@@ -96,6 +96,24 @@ def union_tree_hash(major_tree: TreeNode, minor_tree: TreeNode) -> str:
     return nx.weisfeiler_lehman_graph_hash(union)
 
 
+def tree_shape(root: TreeNode) -> str:
+    if root.left is None and root.right is None:
+        return "L"
+    children = []
+    if root.left is not None:
+        children.append(tree_shape(root.left))
+    if root.right is not None:
+        children.append(tree_shape(root.right))
+    if len(children) != 2:
+        raise ValueError("Expected a full binary tree node to have zero or two children.")
+    left, right = sorted(children)
+    return f"({left},{right})"
+
+
+def union_tree_shape(major_tree: TreeNode, minor_tree: TreeNode) -> str:
+    return f"major={tree_shape(major_tree)};minor={tree_shape(minor_tree)}"
+
+
 def constraint_matrix(major_tree: TreeNode, minor_tree: TreeNode, major_cn: int, minor_cn: int) -> np.ndarray:
     major_paths = leaf_to_root_paths(major_tree)
     minor_paths = leaf_to_root_paths(minor_tree)

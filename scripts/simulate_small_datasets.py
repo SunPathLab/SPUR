@@ -10,7 +10,9 @@ import numpy as np
 
 from spur_codex.compatibility import PureGainCompatibilityChecker
 from spur_codex.enumeration import RouteEnumerator
-from spur_codex.objects import Route, RouteType
+from spur_codex.notation import parse_between_sample_cn, total_minor_label
+from spur_codex.objects import Route
+from spur_codex.route_filter import split_routes
 from spur_codex.simulation import sample_route_jmd
 
 
@@ -22,7 +24,7 @@ def main() -> None:
     parser.add_argument("--n-per-class", type=int, default=20)
     parser.add_argument("--max-total-cn", type=int, default=5)
     parser.add_argument("--max-mrca-cn", type=int, default=6)
-    parser.add_argument("--max-branch-events", type=int, default=4)
+    parser.add_argument("--max-branch-events", type=int, default=5)
     parser.add_argument("--seed", type=int, default=20260604)
     args = parser.parse_args()
 
@@ -36,9 +38,11 @@ def main() -> None:
 
     rows = []
     for pair_index, (sample1_cn, sample2_cn) in enumerate(cn_pairs):
+        all_routes = enumerator.enumerate(sample1_cn, sample2_cn, args.max_mrca_cn, args.max_branch_events)
+        split = split_routes(all_routes)
         routes_by_class = {
-            "pure_gain": enumerator.enumerate(sample1_cn, sample2_cn, args.max_mrca_cn, args.max_branch_events, RouteType.PURE_GAIN),
-            "mixed_gain_loss": enumerator.enumerate(sample1_cn, sample2_cn, args.max_mrca_cn, args.max_branch_events, RouteType.MIXED_GAIN_LOSS),
+            "pure_gain": list(split.pure_gain),
+            "mixed_gain_loss": list(split.mixed_gain_loss),
         }
         if not routes_by_class["pure_gain"] or not routes_by_class["mixed_gain_loss"]:
             continue
@@ -84,8 +88,7 @@ def select_cn_pairs(path: Path, n_pairs: int, max_total_cn: int) -> list[tuple[t
     with path.open() as f:
         reader = csv.DictReader(f, delimiter="\t")
         for row in reader:
-            sample1 = (int(row["major1"]), int(row["minor1"]))
-            sample2 = (int(row["major2"]), int(row["minor2"]))
+            sample1, sample2 = parse_between_sample_cn(row["between_sample_cn"])
             if sum(sample1) > max_total_cn or sum(sample2) > max_total_cn:
                 continue
             counts[canonical_pair(sample1, sample2)] += 1
@@ -133,8 +136,8 @@ def simulate_class(
                 "example_id": example_id,
                 "class_label": label,
                 "npz_path": npz_name,
-                "sample1_cn": f"{sum(sample1_cn)}:{sample1_cn[1]}",
-                "sample2_cn": f"{sum(sample2_cn)}:{sample2_cn[1]}",
+                "sample1_cn": total_minor_label(sample1_cn),
+                "sample2_cn": total_minor_label(sample2_cn),
                 "sample1_major_cn": sample1_cn[0],
                 "sample1_minor_cn": sample1_cn[1],
                 "sample2_major_cn": sample2_cn[0],

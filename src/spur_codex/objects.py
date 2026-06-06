@@ -4,7 +4,9 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Tuple
 
-from .tree import TreeNode
+import numpy as np
+
+from .tree import TreeNode, union_tree_shape
 
 
 class RouteType(Enum):
@@ -29,6 +31,11 @@ class Truncal:
     @property
     def n_events(self) -> int:
         return (self.major_cn - 1) + (self.minor_cn - 1)
+
+    @property
+    def canonical_key(self) -> str:
+        shape = union_tree_shape(self.tree.major_tree, self.tree.minor_tree)
+        return f"truncal_major{self.major_cn}_minor{self.minor_cn}_{shape}"
 
 
 @dataclass(frozen=True)
@@ -71,3 +78,20 @@ class Route:
         if route_type == RouteType.MIXED_GAIN_LOSS:
             return self.is_mixed_gain_loss
         raise ValueError(f"Unsupported route type: {route_type}")
+
+    @property
+    def truncal_key(self) -> str:
+        return self.truncal.canonical_key
+
+    def h(self, sample1_major_cn: int, sample2_major_cn: int, dtype=np.float32) -> np.ndarray:
+        from .encoding import RouteEncoder
+
+        tensor = RouteEncoder().timing_contribution_tensor(
+            [self],
+            sample1_major_cn=sample1_major_cn,
+            sample2_major_cn=sample2_major_cn,
+            dtype=dtype,
+        )
+        if tensor is None:
+            raise ValueError("Route produced no H tensor.")
+        return tensor[0]

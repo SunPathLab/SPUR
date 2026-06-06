@@ -8,7 +8,8 @@ from scipy.optimize import nnls
 
 from .encoding import RouteEncoder
 from .enumeration import RouteEnumerator
-from .objects import Route, RouteType
+from .objects import Route
+from .route_filter import split_routes
 from .tree import constraint_matrix
 
 
@@ -60,13 +61,13 @@ class PureGainCompatibilityChecker:
 
     @lru_cache(maxsize=None)
     def _candidates(self, sample1_cn: tuple[int, int], sample2_cn: tuple[int, int]) -> tuple[PureGainFeasibilityCandidate, ...]:
-        routes = RouteEnumerator().enumerate(
+        all_routes = RouteEnumerator().enumerate(
             sample1_cn=sample1_cn,
             sample2_cn=sample2_cn,
             max_mrca_cn=self.max_mrca_cn,
             max_branch_events=self.max_branch_events,
-            route_type=RouteType.PURE_GAIN,
         )
+        routes = split_routes(all_routes).pure_gain
 
         candidates = []
         n_joint_groups = sample1_cn[0] * sample2_cn[0]

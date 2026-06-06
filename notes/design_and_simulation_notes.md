@@ -17,6 +17,9 @@ Object layer
 Enumeration layer
     Generates truncals, branches, and paired two-sample routes.
 
+Route filter layer
+    Filters, splits, and groups already-enumerated routes.
+
 Encoding layer
     Converts route objects into matrices and J tensors.
 
@@ -28,6 +31,48 @@ Simulation layer
 ```
 
 This is intentionally different from putting all behavior into one route-tree class. The goal is readability and easier changes to route definitions.
+
+## Copy-Number Notation
+
+Use `total:minor` only for observed CN labels. For example:
+
+```text
+4:2 = total copy number 4, minor copy number 2
+```
+
+The corresponding allele-specific counts are written as:
+
+```text
+major=2,minor=2
+```
+
+Do not use `major:minor` notation. In code, tuples such as `(2, 1)` still mean
+`(major_cn, minor_cn)`, but display strings should use either `total:minor` or
+explicit field names like `major=2,minor=1`.
+
+CN-pair parsing is centralized in:
+
+```text
+src/spur_codex/notation.py
+```
+
+Boundary classes:
+
+```text
+CopyNumberState
+    total_cn
+    minor_cn
+    major_cn = total_cn - minor_cn
+    allele_tuple = (major_cn, minor_cn)
+
+CopyNumberPair
+    sample1
+    sample2
+    label = sample1_total:minor_sample2_total:minor
+```
+
+Scripts should read external CN labels as `total:minor` first, then convert to
+internal allele-specific tuples only when calling route enumeration.
 
 ## Object Layer
 
@@ -102,7 +147,59 @@ RouteEnumerator
     Combines branch1 and branch2 into paired routes and filters by RouteType.
 ```
 
-For CN pairs, the simulation script canonicalizes `(sample1_cn, sample2_cn)` so reversed pairs are treated consistently. For example, if present, `3:1 vs 4:2` and `4:2 vs 3:1` are both represented as `4:2 vs 3:1`.
+For CN pairs, the simulation script canonicalizes `(sample1_cn, sample2_cn)` so reversed pairs are treated consistently. Displayed CN labels use `total:minor`, so if present, `3:1 vs 4:2` and `4:2 vs 3:1` are both represented as `4:2 vs 3:1`.
+
+## Route Filter Layer
+
+Implemented in:
+
+```text
+src/spur_codex/route_filter.py
+```
+
+The intended workflow is:
+
+```python
+all_routes = RouteEnumerator().enumerate(sample1_cn, sample2_cn, max_mrca_cn, max_branch_events)
+split = split_routes(all_routes)
+groups = group_by_truncal(split.mixed_gain_loss)
+```
+
+This keeps enumeration broad and moves route selection into a separate module.
+Each `Truncal` has a canonical key that uses the readable branching shape
+instead of the NetworkX hash:
+
+```text
+truncal_major{major_cn}_minor{minor_cn}_major={tree_shape};minor={tree_shape}
+```
+
+Tree shapes use:
+
+```text
+L = leaf
+(L,L) = one split with two leaves
+((L,L),L) = a three-leaf branching shape
+```
+
+For example:
+
+```text
+truncal_major3_minor1_major=((L,L),L);minor=L
+```
+
+Each `Route` exposes the same key through `route.truncal_key`.
+Routes can also generate their own single-route H operator:
+
+```python
+H_route = route.h(sample1_major_cn, sample2_major_cn)
+```
+
+For scoring, routes should usually be grouped by truncal first. A `RouteGroup`
+can collect the whole group H tensor:
+
+```python
+H_group = group.h_tensor(sample1_major_cn, sample2_major_cn)
+```
 
 ## Encoding Layer
 
@@ -251,7 +348,8 @@ PYTHONPATH=src python scripts/simulate_small_datasets.py \
   --cn-tsv /home/yunong-xia/Downloads/May_27_real_data_indices.tsv \
   --out-dir simulated_small \
   --n-cn-pairs 3 \
-  --n-per-class 20
+  --n-per-class 20 \
+  --max-branch-events 5
 ```
 
 Current generated dataset:
