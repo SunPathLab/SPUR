@@ -1,9 +1,9 @@
 import numpy as np
 
-from spur_codex.scoring import TJBScorer, binom_pmf_tensor, posterior_probabilities
+from spur_codex.scoring import THBScorer, binom_pmf_tensor, posterior_probabilities
 
 
-def test_tjb_scorer_returns_one_score_per_route():
+def test_thb_scorer_returns_one_score_per_route():
     T = np.array(
         [
             [0.7, 0.3],
@@ -11,7 +11,7 @@ def test_tjb_scorer_returns_one_score_per_route():
         ],
         dtype=float,
     )
-    J = np.array(
+    H = np.array(
         [
             [[1.0, 0.0], [0.0, 1.0]],
             [[0.0, 1.0], [1.0, 0.0]],
@@ -20,7 +20,7 @@ def test_tjb_scorer_returns_one_score_per_route():
     )
     B = np.full((2, 3, 2), 0.5, dtype=float)
 
-    scores = TJBScorer().score(T, J, B)
+    scores = THBScorer().score(T, H, B)
 
     assert scores.shape == (2,)
     assert np.all(np.isfinite(scores))
@@ -50,7 +50,7 @@ def test_binom_pmf_tensor_shape():
 
 def test_posterior_calculation_prefers_likely_route():
     T = np.array([[1.0]], dtype=float)
-    J = np.array(
+    H = np.array(
         [
             [[1.0, 0.0]],
             [[0.0, 1.0]],
@@ -67,7 +67,7 @@ def test_posterior_calculation_prefers_likely_route():
         dtype=float,
     )
 
-    log_scores = TJBScorer().score(T, J, B)
+    log_scores = THBScorer().score(T, H, B)
     posterior = posterior_probabilities(log_scores)
 
     expected_log_scores = np.array([np.log(0.9) * 2, np.log(0.1) * 2])

@@ -1,13 +1,13 @@
 # SPUR Codex Prototype
 
-This is a clean prototype package for SPUR route objects, route enumeration, route encoding, and T/J/B scoring.
+This is a clean prototype package for SPUR route objects, route enumeration, route encoding, and T/H/B scoring.
 
 The design separates three layers:
 
 - `objects.py`: theoretical route objects and route labels.
 - `enumeration.py`: truncal, branch, and paired-route enumeration.
 - `route_filter.py`: route filtering, pure/complex split, and truncal grouping.
-- `encoding.py` and `scoring.py`: conversion to numeric H/J arrays and T/H/B scoring.
+- `encoding.py` and `scoring.py`: conversion to numeric H arrays and T/H/B scoring.
 
 The updated mixed-gain-loss definition is pair-level:
 
@@ -31,7 +31,7 @@ src/spur_codex/objects.py      theoretical route objects and labels
 src/spur_codex/tree.py         gain-history tree utilities and constraint matrices
 src/spur_codex/enumeration.py  truncal, branch, and paired-route enumeration
 src/spur_codex/route_filter.py route filtering, route splitting, and truncal grouping
-src/spur_codex/encoding.py     route-to-matrix and paired H/J tensor encoding
+src/spur_codex/encoding.py     route-to-matrix and paired H tensor encoding
 src/spur_codex/scoring.py      T/H/B scoring and binomial PMF tensor helpers
 src/spur_codex/features.py     score-derived diagnostic features
 scripts/simulate_small_datasets.py  small route/JMD simulation from real CN pairs

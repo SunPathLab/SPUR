@@ -8,10 +8,10 @@ from .timing import sample_timing
 
 
 def route_jmd(route: Route, sample1_cn: tuple[int, int], sample2_cn: tuple[int, int], timing: np.ndarray) -> np.ndarray:
-    J = RouteEncoder().timing_contribution_tensor([route], sample1_cn[0], sample2_cn[0])
-    if J is None:
+    H = RouteEncoder().h_tensor([route], sample1_cn[0], sample2_cn[0])
+    if H is None:
         raise ValueError("Route produced no timing contribution tensor.")
-    q = timing @ J[0]
+    q = timing @ H[0]
     q_sum = q.sum()
     if q_sum <= 0:
         raise ValueError("Route/timing produced zero shared-SSNV JMD mass.")

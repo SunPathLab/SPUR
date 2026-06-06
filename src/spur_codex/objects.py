@@ -9,6 +9,7 @@ import numpy as np
 from .tree import TreeNode, union_tree_shape
 
 
+# route type
 class RouteType(Enum):
     ALL = "all"
     PURE_GAIN = "pure_gain"
@@ -23,19 +24,23 @@ class GainHistoryTree:
 
 @dataclass(frozen=True)
 class Truncal:
-    major_cn: int
-    minor_cn: int
+    truncal_major_cn: int
+    truncal_minor_cn: int
     tree: GainHistoryTree
-    tree_hash: str
 
     @property
     def n_events(self) -> int:
-        return (self.major_cn - 1) + (self.minor_cn - 1)
+        # self.truncal_major_cn can represent number of leaves in the major tree
+        # self.truncal_minor_cn can represent number of leaves in the minor tree
+        return (self.truncal_major_cn - 1) + (self.truncal_minor_cn - 1)
 
     @property
     def canonical_key(self) -> str:
+        # this should contain major cn info, minor_cn info, and tree shape info
+        # Tree shape info is represented by a string such as "((L,(L,L)), (L))",
+        # representing the shape of the union of major and minor tree
         shape = union_tree_shape(self.tree.major_tree, self.tree.minor_tree)
-        return f"truncal_major{self.major_cn}_minor{self.minor_cn}_{shape}"
+        return f"truncal_major{self.truncal_major_cn}_minor{self.truncal_minor_cn}_{shape}"
 
 
 @dataclass(frozen=True)
@@ -86,7 +91,7 @@ class Route:
     def h(self, sample1_major_cn: int, sample2_major_cn: int, dtype=np.float32) -> np.ndarray:
         from .encoding import RouteEncoder
 
-        tensor = RouteEncoder().timing_contribution_tensor(
+        tensor = RouteEncoder().h_tensor(
             [self],
             sample1_major_cn=sample1_major_cn,
             sample2_major_cn=sample2_major_cn,

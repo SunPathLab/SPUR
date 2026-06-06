@@ -75,13 +75,13 @@ class PureGainCompatibilityChecker:
             route_constraint = constraint_matrix(
                 route.truncal.tree.major_tree,
                 route.truncal.tree.minor_tree,
-                route.truncal.major_cn,
-                route.truncal.minor_cn,
+                route.truncal.truncal_major_cn,
+                route.truncal.truncal_minor_cn,
             )
-            J = self.encoder.timing_contribution_tensor([route], sample1_cn[0], sample2_cn[0])
-            if J is None:
+            H = self.encoder.h_tensor([route], sample1_cn[0], sample2_cn[0])
+            if H is None:
                 continue
-            operator = J[0].T
+            operator = H[0].T
             if operator.shape[0] != n_joint_groups:
                 raise ValueError("Unexpected pure-gain operator shape.")
             candidates.append(

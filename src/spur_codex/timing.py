@@ -12,8 +12,8 @@ def sample_timing(truncal: Truncal, rng: np.random.Generator, n_steps: int = 200
     matrix = constraint_matrix(
         truncal.tree.major_tree,
         truncal.tree.minor_tree,
-        truncal.major_cn,
-        truncal.minor_cn,
+        truncal.truncal_major_cn,
+        truncal.truncal_minor_cn,
     )
     init = _feasible_timing(matrix)
     basis = null_space(matrix)

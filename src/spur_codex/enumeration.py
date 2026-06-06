@@ -4,26 +4,31 @@ from itertools import combinations_with_replacement
 from typing import Iterable, List, Tuple
 
 from .objects import Branch, GainHistoryTree, Route, RouteType, Truncal
-from .tree import all_full_binary_trees, assign_node_ids, union_tree_hash
+from .tree import all_full_binary_trees, assign_node_ids
 
 
 class TruncalEnumerator:
     def enumerate_for_state(self, major_cn: int, minor_cn: int) -> List[Truncal]:
+        # this may need to be encapsulated in a separated function.
         major_trees = all_full_binary_trees(major_cn)
         minor_trees = all_full_binary_trees(minor_cn)
         for tree in major_trees + minor_trees:
             assign_node_ids(tree)
-
+        
+        
+        # for each (major_tree,minor_tree),
+        # construct a gain history tree,
+        # (Computation note: since the object is immutable, no need to copy the tree for each truncal.)
+        # Then for each gain history tree, construct a truncal object
         truncals: List[Truncal] = []
         for major_tree in major_trees:
             for minor_tree in minor_trees:
                 gain_tree = GainHistoryTree(major_tree=major_tree, minor_tree=minor_tree)
                 truncals.append(
                     Truncal(
-                        major_cn=major_cn,
-                        minor_cn=minor_cn,
+                        truncal_major_cn=major_cn,
+                        truncal_minor_cn=minor_cn,
                         tree=gain_tree,
-                        tree_hash=union_tree_hash(major_tree, minor_tree),
                     )
                 )
         return truncals
@@ -43,8 +48,8 @@ class BranchEnumerator:
         if target_major_cn < 0 or target_minor_cn < 0:
             raise ValueError("Target copy numbers must be nonnegative.")
 
-        major_vectors = self._allele_vectors(truncal.major_cn, target_major_cn)
-        minor_vectors = self._allele_vectors(truncal.minor_cn, target_minor_cn)
+        major_vectors = self._allele_vectors(truncal.truncal_major_cn, target_major_cn)
+        minor_vectors = self._allele_vectors(truncal.truncal_minor_cn, target_minor_cn)
 
         branches: List[Branch] = []
         next_index = 0

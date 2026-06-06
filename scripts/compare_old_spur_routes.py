@@ -18,7 +18,6 @@ class RouteRecord:
     source: str
     mrca_major_cn: int
     mrca_minor_cn: int
-    tree_hash: str
     canonical_tree: str
     branch1_fate: tuple[int, ...]
     branch2_fate: tuple[int, ...]
@@ -85,7 +84,6 @@ def main() -> None:
                 "mrca_major_cn",
                 "mrca_minor_cn",
                 "canonical_tree",
-                "tree_hash",
                 "old_tree_index",
                 "old_branch1_index",
                 "old_branch2_index",
@@ -122,7 +120,6 @@ def main() -> None:
                     "mrca_major_cn": record.mrca_major_cn,
                     "mrca_minor_cn": record.mrca_minor_cn,
                     "canonical_tree": record.canonical_tree,
-                    "tree_hash": record.tree_hash,
                     "old_tree_index": "" if old is None else old.tree_index,
                     "old_branch1_index": "" if old is None else old.branch1_index,
                     "old_branch2_index": "" if old is None else old.branch2_index,
@@ -182,7 +179,6 @@ def old_spur_complex_records(
                             source="old_spur",
                             mrca_major_cn=major_cn,
                             mrca_minor_cn=minor_cn,
-                            tree_hash=mrca.hash_val,
                             canonical_tree=f"truncal_major{major_cn}_minor{minor_cn}_{union_tree_shape(mrca.major_tree, mrca.minor_tree)}",
                             branch1_fate=array_to_tuple(fate1),
                             branch2_fate=array_to_tuple(fate2),
@@ -203,8 +199,6 @@ def write_fate_comparison(
 ) -> None:
     old = canonical_tree_multiset(old_records)
     codex = canonical_tree_multiset(codex_records)
-    old_hashes = canonical_tree_hashes(old_records)
-    codex_hashes = canonical_tree_hashes(codex_records)
     keys = sorted(set(old) | set(codex), key=sort_key)
     with path.open("w", newline="") as f:
         writer = csv.DictWriter(
@@ -222,8 +216,6 @@ def write_fate_comparison(
                 "branch2_fate",
                 "branch1_events",
                 "branch2_events",
-                "old_tree_hashes",
-                "codex_tree_hashes",
             ],
             delimiter="\t",
         )
@@ -247,8 +239,6 @@ def write_fate_comparison(
                     "branch2_fate": vector_label(branch2_fate),
                     "branch1_events": event_count(branch1_fate),
                     "branch2_events": event_count(branch2_fate),
-                    "old_tree_hashes": ",".join(sorted(old_hashes.get(key, set()))),
-                    "codex_tree_hashes": ",".join(sorted(codex_hashes.get(key, set()))),
                 }
             )
 
@@ -275,28 +265,6 @@ def canonical_tree_multiset(records: list[RouteRecord]) -> dict[tuple[int, int, 
     return counts
 
 
-def fate_hashes(records: list[RouteRecord]) -> dict[tuple[int, int, tuple[int, ...], tuple[int, ...]], set[str]]:
-    hashes: dict[tuple[int, int, tuple[int, ...], tuple[int, ...]], set[str]] = {}
-    for record in records:
-        key = (record.mrca_major_cn, record.mrca_minor_cn, record.branch1_fate, record.branch2_fate)
-        hashes.setdefault(key, set()).add(record.tree_hash)
-    return hashes
-
-
-def canonical_tree_hashes(records: list[RouteRecord]) -> dict[tuple[int, int, str, tuple[int, ...], tuple[int, ...]], set[str]]:
-    hashes: dict[tuple[int, int, str, tuple[int, ...], tuple[int, ...]], set[str]] = {}
-    for record in records:
-        key = (
-            record.mrca_major_cn,
-            record.mrca_minor_cn,
-            record.canonical_tree,
-            record.branch1_fate,
-            record.branch2_fate,
-        )
-        hashes.setdefault(key, set()).add(record.tree_hash)
-    return hashes
-
-
 def codex_both_deletion_records(
     sample1_cn: tuple[int, int],
     sample2_cn: tuple[int, int],
@@ -316,9 +284,8 @@ def codex_both_deletion_records(
         records.append(
             RouteRecord(
                 source="spur_codex",
-                mrca_major_cn=route.truncal.major_cn,
-                mrca_minor_cn=route.truncal.minor_cn,
-                tree_hash=route.truncal.tree_hash,
+                mrca_major_cn=route.truncal.truncal_major_cn,
+                mrca_minor_cn=route.truncal.truncal_minor_cn,
                 canonical_tree=route.truncal.canonical_key,
                 branch1_fate=route.branch1.copy_fate_vector,
                 branch2_fate=route.branch2.copy_fate_vector,

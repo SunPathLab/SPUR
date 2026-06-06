@@ -3,7 +3,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Optional
 
-import networkx as nx
 import numpy as np
 
 
@@ -74,28 +73,6 @@ def leaf_to_root_paths(root: TreeNode) -> List[List[int]]:
     return paths
 
 
-def tree_hash(root: TreeNode) -> str:
-    if root.id is None:
-        raise ValueError("Tree node IDs must be assigned before hashing.")
-    graph = nx.Graph()
-    stack = [root]
-    while stack:
-        node = stack.pop()
-        graph.add_node(node.id)
-        for child in (node.left, node.right):
-            if child is not None:
-                graph.add_edge(node.id, child.id)
-                stack.append(child)
-    return nx.weisfeiler_lehman_graph_hash(graph)
-
-
-def union_tree_hash(major_tree: TreeNode, minor_tree: TreeNode) -> str:
-    major_graph = _tree_graph(major_tree)
-    minor_graph = _tree_graph(minor_tree)
-    union = nx.union(major_graph, minor_graph, rename=("major", "minor"))
-    return nx.weisfeiler_lehman_graph_hash(union)
-
-
 def tree_shape(root: TreeNode) -> str:
     if root.left is None and root.right is None:
         return "L"
@@ -115,34 +92,22 @@ def union_tree_shape(major_tree: TreeNode, minor_tree: TreeNode) -> str:
 
 
 def constraint_matrix(major_tree: TreeNode, minor_tree: TreeNode, major_cn: int, minor_cn: int) -> np.ndarray:
+    # traverse paths from root to each leave
     major_paths = leaf_to_root_paths(major_tree)
     minor_paths = leaf_to_root_paths(minor_tree)
-
-    major_block = np.zeros((major_cn, 2 * major_cn - 1), dtype=float)
+    
+    # shape of major block: (number of major alleles, number of major tree time durations)
+    major_block = np.zeros((major_cn, 2 * major_cn - 1), dtype=int)
     for row, path in enumerate(major_paths):
         for col in path:
-            major_block[row, col] = 1.0
+            major_block[row, col] = 1
 
-    minor_block = np.zeros((minor_cn, 2 * minor_cn - 1), dtype=float)
+    # shape of minor block: (number of minor alleles, number of minor tree time durations)
+    minor_block = np.zeros((minor_cn, 2 * minor_cn - 1), dtype=int)
     for row, path in enumerate(minor_paths):
         for col in path:
-            minor_block[row, col] = 1.0
+            minor_block[row, col] = 1
 
-    top_right = np.zeros((major_block.shape[0], minor_block.shape[1]), dtype=float)
-    bottom_left = np.zeros((minor_block.shape[0], major_block.shape[1]), dtype=float)
+    top_right = np.zeros((major_block.shape[0], minor_block.shape[1]), dtype=int)
+    bottom_left = np.zeros((minor_block.shape[0], major_block.shape[1]), dtype=int)
     return np.block([[major_block, top_right], [bottom_left, minor_block]])
-
-
-def _tree_graph(root: TreeNode) -> nx.Graph:
-    if root.id is None:
-        raise ValueError("Tree node IDs must be assigned before graph construction.")
-    graph = nx.Graph()
-    stack = [root]
-    while stack:
-        node = stack.pop()
-        graph.add_node(node.id)
-        for child in (node.left, node.right):
-            if child is not None:
-                graph.add_edge(node.id, child.id)
-                stack.append(child)
-    return graph

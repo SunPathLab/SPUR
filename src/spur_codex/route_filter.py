@@ -29,7 +29,7 @@ class RouteGroup:
         return self.routes[0].truncal
 
     def h_tensor(self, sample1_major_cn: int, sample2_major_cn: int, dtype=np.float32) -> np.ndarray:
-        tensor = RouteEncoder().timing_contribution_tensor(
+        tensor = RouteEncoder().h_tensor(
             self.routes,
             sample1_major_cn=sample1_major_cn,
             sample2_major_cn=sample2_major_cn,

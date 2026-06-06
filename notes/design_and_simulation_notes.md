@@ -21,10 +21,10 @@ Route filter layer
     Filters, splits, and groups already-enumerated routes.
 
 Encoding layer
-    Converts route objects into matrices and J tensors.
+    Converts route objects into matrices and H tensors.
 
 Scoring / compatibility layer
-    Computes T/J/B scores and pure-gain compatibility.
+    Computes T/H/B scores and pure-gain compatibility.
 
 Simulation layer
     Samples timing vectors and ground-truth JMDs.
@@ -93,7 +93,7 @@ Truncal
     major_cn
     minor_cn
     tree
-    tree_hash
+    canonical_key
 
 Branch
     copy_fate_vector
@@ -214,24 +214,24 @@ The encoder converts routes into:
 ```text
 copy-fate matrices
 multiplicity matrices
-paired J tensor
+paired H tensor
 ```
 
-The J tensor shape is:
+The H tensor shape is:
 
 ```text
 n_routes x n_timing_stages x n_joint_multiplicity_groups
 ```
 
-J uses sample1-major order:
+H uses sample1-major order:
 
 ```python
 joint_idx = (sample1_multiplicity - 1) * sample2_major_cn + (sample2_multiplicity - 1)
 ```
 
-For mixed-gain-loss routes, J is built from explicit route pairs. It is not a rectangular cross product of independently filtered branch lists.
+For mixed-gain-loss routes, H is built from explicit route pairs. It is not a rectangular cross product of independently filtered branch lists.
 
-## T/J/B Scoring
+## T/H/B Scoring
 
 Implemented in:
 
@@ -243,7 +243,7 @@ The scorer computes route log scores from:
 
 ```text
 T: timing samples
-J: timing contribution tensor
+H: timing contribution tensor
 B: binomial likelihood tensor
 ```
 
@@ -404,7 +404,7 @@ sample2_major_cn
 sample2_minor_cn
 mrca_major_cn
 mrca_minor_cn
-truncal_tree_hash
+truncal_key
 branch1_index
 branch2_index
 branch1_events
@@ -434,8 +434,8 @@ The tests cover:
 object properties
 route enumeration and updated mixed-gain-loss definition
 4:2 vs 3:1 route-count sanity checks
-paired J tensor layout
-T/J/B scoring
+paired H tensor layout
+T/H/B scoring
 posterior normalization
 pure-gain compatibility
 simulation CN-pair canonicalization
