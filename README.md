@@ -2,12 +2,15 @@
 
 This is a clean prototype package for SPUR route objects, route enumeration, route encoding, and T/H/B scoring.
 
-The design separates three layers:
+The design separates these responsibilities:
 
-- `objects.py`: theoretical route objects and route labels.
+- `tree.py`: generic tree node structure and tree-shape/path utilities only.
+- `route.py`: biological route objects, including `Truncal.constraint_matrix`.
 - `enumeration.py`: truncal, branch, and paired-route enumeration.
 - `route_filter.py`: route filtering, pure/complex split, and truncal grouping.
-- `encoding.py` and `scoring.py`: conversion to numeric H arrays and T/H/B scoring.
+- `encoding.py`: conversion from routes to numeric H arrays.
+- `sampling.py`: timing and VAF sampling.
+- `scoring.py`: B preparation/binomial likelihood helpers and T/H/B scoring.
 
 The updated mixed-gain-loss definition is pair-level:
 
@@ -21,20 +24,23 @@ Use `total:minor` only for observed CN labels. For example, `4:2` means total
 copy number 4 and minor copy number 2, so the allele-specific counts are
 `major=2,minor=2`.
 
-When referring directly to allele-specific major/minor counts, use
-`major=...,minor=...` or field names like `sample1_major_cn`.
+Public API tuples use `(total_cn, minor_cn)`. Major copy number is derived as
+`total_cn - minor_cn` inside route objects and allele-tree math.
 
 ## Structure
 
 ```text
-src/spur_codex/objects.py      theoretical route objects and labels
-src/spur_codex/tree.py         gain-history tree utilities and constraint matrices
+src/spur_codex/route.py      theoretical route objects and labels
+src/spur_codex/tree.py         generic tree node utilities
 src/spur_codex/enumeration.py  truncal, branch, and paired-route enumeration
 src/spur_codex/route_filter.py route filtering, route splitting, and truncal grouping
 src/spur_codex/encoding.py     route-to-matrix and paired H tensor encoding
-src/spur_codex/scoring.py      T/H/B scoring and binomial PMF tensor helpers
+src/spur_codex/hit_and_run.py  GRITIC-derived hit-and-run sampler
+src/spur_codex/sampling.py     timing/VAF sampling
+src/spur_codex/scoring.py      B preparation, T/H/B scoring, and binomial PMF helpers
 src/spur_codex/features.py     score-derived diagnostic features
 scripts/simulate_small_datasets.py  small route/JMD simulation from real CN pairs
+scripts/main.py  CLI smoke-test for route enumeration, grouping, timing, and H
 ```
 
 ## Tests
@@ -70,5 +76,5 @@ branch2_copy_fate   sample 2 branch copy-fate vector
 ```
 
 `metadata.tsv` records the class label, observed CN pair in `total:minor`
-notation, truncal tree hash, allele-specific major/minor columns, branch
-event counts, and pure-gain compatibility flag.
+notation, canonical `truncal_key`, total/minor CN columns, branch event counts,
+and pure-gain compatibility flag.

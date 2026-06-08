@@ -8,9 +8,13 @@ version = "0.1.0"
 description = "Clean route enumeration and THB scoring prototype for SPUR."
 requires-python = ">=3.10"
 dependencies = [
+    "numba",
     "numpy",
     "scipy",
 ]
+
+[project.scripts]
+spur-codex = "spur_codex.main:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

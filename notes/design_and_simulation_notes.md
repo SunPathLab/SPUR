@@ -12,7 +12,10 @@ The main layers are:
 
 ```text
 Object layer
-    Defines theoretical route objects.
+    Defines biological route objects. Truncal owns the major/minor constraint matrix.
+
+Tree utility layer
+    Defines only generic tree node structure and generic tree utilities.
 
 Enumeration layer
     Generates truncals, branches, and paired two-sample routes.
@@ -24,10 +27,10 @@ Encoding layer
     Converts route objects into matrices and H tensors.
 
 Scoring / compatibility layer
-    Computes T/H/B scores and pure-gain compatibility.
+    Prepares B tensors, computes T/H/B scores, and checks pure-gain compatibility.
 
-Simulation layer
-    Samples timing vectors and ground-truth JMDs.
+Sampling / simulation layer
+    Samples timing vectors and VAFs; simulation uses those samples to generate ground-truth JMDs.
 ```
 
 This is intentionally different from putting all behavior into one route-tree class. The goal is readability and easier changes to route definitions.
@@ -46,9 +49,9 @@ The corresponding allele-specific counts are written as:
 major=2,minor=2
 ```
 
-Do not use `major:minor` notation. In code, tuples such as `(2, 1)` still mean
-`(major_cn, minor_cn)`, but display strings should use either `total:minor` or
-explicit field names like `major=2,minor=1`.
+Do not use `major:minor` notation for CN pairs. In public code paths, tuples
+such as `(3, 1)` mean `(total_cn, minor_cn)`. Major copy number is derived as
+`total_cn - minor_cn` inside route objects and allele-tree math.
 
 CN-pair parsing is centralized in:
 
@@ -63,7 +66,8 @@ CopyNumberState
     total_cn
     minor_cn
     major_cn = total_cn - minor_cn
-    allele_tuple = (major_cn, minor_cn)
+    cn_tuple = (total_cn, minor_cn)
+    major_minor_tuple = (major_cn, minor_cn)
 
 CopyNumberPair
     sample1
@@ -71,15 +75,16 @@ CopyNumberPair
     label = sample1_total:minor_sample2_total:minor
 ```
 
-Scripts should read external CN labels as `total:minor` first, then convert to
-internal allele-specific tuples only when calling route enumeration.
+Scripts should read external CN labels as `total:minor` first. Convert to
+allele-specific `(major_cn, minor_cn)` only at old-SPUR compatibility
+boundaries.
 
 ## Object Layer
 
 Implemented in:
 
 ```text
-src/spur_codex/objects.py
+src/spur_codex/route.py
 ```
 
 Core objects:
@@ -90,14 +95,18 @@ GainHistoryTree
     minor_tree
 
 Truncal
-    major_cn
-    minor_cn
+    truncal_total_cn
+    truncal_minor_cn
+    truncal_major_cn = truncal_total_cn - truncal_minor_cn
     tree
     canonical_key
+    constraint_matrix
 
 Branch
     copy_fate_vector
     branch_index
+    sample_total_cn
+    sample_minor_cn
 
 Route
     truncal
@@ -170,7 +179,7 @@ Each `Truncal` has a canonical key that uses the readable branching shape
 instead of the NetworkX hash:
 
 ```text
-truncal_major{major_cn}_minor{minor_cn}_major={tree_shape};minor={tree_shape}
+truncal_{total_cn}:{minor_cn}_major={tree_shape};minor={tree_shape}
 ```
 
 Tree shapes use:
@@ -184,21 +193,21 @@ L = leaf
 For example:
 
 ```text
-truncal_major3_minor1_major=((L,L),L);minor=L
+truncal_4:1_major=((L,L),L);minor=L
 ```
 
 Each `Route` exposes the same key through `route.truncal_key`.
 Routes can also generate their own single-route H operator:
 
 ```python
-H_route = route.h(sample1_major_cn, sample2_major_cn)
+H_route = route.h()
 ```
 
-For scoring, routes should usually be grouped by truncal first. A `RouteGroup`
+For scoring, routes should usually be grouped by truncal first. A `RouteGroupByTruncal`
 can collect the whole group H tensor:
 
 ```python
-H_group = group.h_tensor(sample1_major_cn, sample2_major_cn)
+H_group = group.h_tensor()
 ```
 
 ## Encoding Layer
@@ -223,9 +232,10 @@ The H tensor shape is:
 n_routes x n_timing_stages x n_joint_multiplicity_groups
 ```
 
-H uses sample1-major order:
+H uses derived major-copy multiplicity order:
 
 ```python
+sample2_major_cn = sample2_total_cn - sample2_minor_cn
 joint_idx = (sample1_multiplicity - 1) * sample2_major_cn + (sample2_multiplicity - 1)
 ```
 
@@ -245,6 +255,22 @@ The scorer computes route log scores from:
 T: timing samples
 H: timing contribution tensor
 B: binomial likelihood tensor
+```
+
+`B` is the binomial PMF tensor. It is currently built by:
+
+```python
+B = binom_pmf_tensor(alt1, depth1, alt2, depth2, vaf_samples, n_joint_groups)
+```
+
+The scorer should own B preparation because B is part of the likelihood model.
+The sampling layer should only produce timing vectors and VAF samples.
+
+Joint multiplicity ordering must match H:
+
+```python
+sample2_major_cn = sample2_total_cn - sample2_minor_cn
+joint_idx = (sample1_multiplicity - 1) * sample2_major_cn + (sample2_multiplicity - 1)
 ```
 
 A posterior helper normalizes route log scores:
@@ -309,9 +335,38 @@ Potential future optimizations:
 Implemented in:
 
 ```text
-src/spur_codex/timing.py
+src/spur_codex/hit_and_run.py
+src/spur_codex/sampling.py
 src/spur_codex/simulation.py
 scripts/simulate_small_datasets.py
+```
+
+Current timing sampling uses old-SPUR-style hit-and-run. The copied
+hit-and-run implementation is isolated in `hit_and_run.py` and cites the
+GRITIC source:
+
+```text
+https://github.com/VanLoo-lab/gritic/blob/main/gritic/hitandrun.py
+```
+
+The current timing wrapper is:
+
+```python
+T = sample_timing_vectors(truncal, rng, n_samples=1000)
+```
+
+The intended next boundary is:
+
+```text
+sampling.py
+    sample_timing_vectors
+    expected_vafs
+    sample_vafs
+
+scoring.py
+    prepare_b_tensor
+    binom_pmf_tensor
+    THBScorer
 ```
 
 The script reads CN pairs from:
@@ -398,11 +453,11 @@ class_label
 npz_path
 sample1_cn
 sample2_cn
-sample1_major_cn
+sample1_total_cn
 sample1_minor_cn
-sample2_major_cn
+sample2_total_cn
 sample2_minor_cn
-mrca_major_cn
+mrca_total_cn
 mrca_minor_cn
 truncal_key
 branch1_index
@@ -425,7 +480,7 @@ tests/
 Because the active environment does not currently include `pytest`, a small runner is included:
 
 ```bash
-PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. python tests/run_tests.py
+conda run -n spur env PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python tests/run_tests.py
 ```
 
 The tests cover:
@@ -439,4 +494,6 @@ T/H/B scoring
 posterior normalization
 pure-gain compatibility
 simulation CN-pair canonicalization
+generic tree utilities and Truncal.constraint_matrix
+old-SPUR-style timing sampling
 ```

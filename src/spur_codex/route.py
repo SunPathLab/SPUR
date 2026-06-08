@@ -6,7 +6,7 @@ from typing import Tuple
 
 import numpy as np
 
-from .tree import TreeNode, union_tree_shape
+from .tree import TreeNode, leaf_to_root_paths, union_tree_shape
 
 
 # route type
@@ -24,29 +24,49 @@ class GainHistoryTree:
 
 @dataclass(frozen=True)
 class Truncal:
-    truncal_major_cn: int
+    truncal_total_cn: int
     truncal_minor_cn: int
     tree: GainHistoryTree
 
     @property
+    def truncal_major_cn(self) -> int:
+        return self.truncal_total_cn - self.truncal_minor_cn
+
+    @property
     def n_events(self) -> int:
-        # self.truncal_major_cn can represent number of leaves in the major tree
-        # self.truncal_minor_cn can represent number of leaves in the minor tree
         return (self.truncal_major_cn - 1) + (self.truncal_minor_cn - 1)
 
     @property
     def canonical_key(self) -> str:
-        # this should contain major cn info, minor_cn info, and tree shape info
-        # Tree shape info is represented by a string such as "((L,(L,L)), (L))",
-        # representing the shape of the union of major and minor tree
         shape = union_tree_shape(self.tree.major_tree, self.tree.minor_tree)
-        return f"truncal_major{self.truncal_major_cn}_minor{self.truncal_minor_cn}_{shape}"
+        return f"truncal_{self.truncal_total_cn}:{self.truncal_minor_cn}_{shape}"
+    
+    @property
+    def constraint_matrix(self) -> np.ndarray:
+        major_paths = leaf_to_root_paths(self.tree.major_tree)
+        minor_paths = leaf_to_root_paths(self.tree.minor_tree)
+
+        major_block = np.zeros((self.truncal_major_cn, 2 * self.truncal_major_cn - 1), dtype=int)
+        for row, path in enumerate(major_paths):
+            for col in path:
+                major_block[row, col] = 1
+
+        minor_block = np.zeros((self.truncal_minor_cn, 2 * self.truncal_minor_cn - 1), dtype=int)
+        for row, path in enumerate(minor_paths):
+            for col in path:
+                minor_block[row, col] = 1
+
+        top_right = np.zeros((major_block.shape[0], minor_block.shape[1]), dtype=int)
+        bottom_left = np.zeros((minor_block.shape[0], major_block.shape[1]), dtype=int)
+        return np.block([[major_block, top_right], [bottom_left, minor_block]])
 
 
 @dataclass(frozen=True)
 class Branch:
     copy_fate_vector: Tuple[int, ...]
     branch_index: int
+    sample_total_cn: int
+    sample_minor_cn: int
 
     @property
     def has_deletion(self) -> bool:
@@ -60,12 +80,40 @@ class Branch:
     def n_events(self) -> int:
         return sum(abs(copy_count - 1) for copy_count in self.copy_fate_vector)
 
+    @property
+    def canonical_key(self) -> str:
+        return ",".join(map(str, self.copy_fate_vector))
+    
 
 @dataclass(frozen=True)
 class Route:
     truncal: Truncal
     branch1: Branch
     branch2: Branch
+    
+    @property
+    def truncal_total_cn(self) -> int:
+        return self.truncal.truncal_total_cn
+    
+    @property
+    def truncal_minor_cn(self) -> int:
+        return self.truncal.truncal_minor_cn
+    
+    @property
+    def sample1_total_cn(self) -> int:
+        return self.branch1.sample_total_cn
+    
+    @property
+    def sample1_minor_cn(self) -> int:
+        return self.branch1.sample_minor_cn
+    
+    @property
+    def sample2_total_cn(self) -> int:
+        return self.branch2.sample_total_cn
+    
+    @property
+    def sample2_minor_cn(self) -> int:
+        return self.branch2.sample_minor_cn
 
     @property
     def is_mixed_gain_loss(self) -> bool:
@@ -87,14 +135,17 @@ class Route:
     @property
     def truncal_key(self) -> str:
         return self.truncal.canonical_key
+    
+    @property
+    def total_events(self) -> int:
+        return self.truncal.n_events + self.branch1.n_events + self.branch2.n_events
+    
 
-    def h(self, sample1_major_cn: int, sample2_major_cn: int, dtype=np.float32) -> np.ndarray:
+    def h(self, dtype=np.float32) -> np.ndarray:
         from .encoding import RouteEncoder
 
         tensor = RouteEncoder().h_tensor(
             [self],
-            sample1_major_cn=sample1_major_cn,
-            sample2_major_cn=sample2_major_cn,
             dtype=dtype,
         )
         if tensor is None:

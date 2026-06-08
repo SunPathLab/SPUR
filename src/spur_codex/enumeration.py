@@ -3,13 +3,18 @@ from __future__ import annotations
 from itertools import combinations_with_replacement
 from typing import Iterable, List, Tuple
 
-from .objects import Branch, GainHistoryTree, Route, RouteType, Truncal
+from .route import Branch, GainHistoryTree, Route, RouteType, Truncal
 from .tree import all_full_binary_trees, assign_node_ids
 
 
 class TruncalEnumerator:
-    def enumerate_for_state(self, major_cn: int, minor_cn: int) -> List[Truncal]:
-        # this may need to be encapsulated in a separated function.
+    def enumerate_for_state(self, total_cn: int, minor_cn: int) -> List[Truncal]:
+        if total_cn < 0 or minor_cn < 0:
+            raise ValueError("Truncal copy numbers must be nonnegative.")
+        major_cn = total_cn - minor_cn
+        if major_cn < minor_cn:
+            raise ValueError("Minor copy number cannot exceed major copy number.")
+
         major_trees = all_full_binary_trees(major_cn)
         minor_trees = all_full_binary_trees(minor_cn)
         for tree in major_trees + minor_trees:
@@ -26,7 +31,7 @@ class TruncalEnumerator:
                 gain_tree = GainHistoryTree(major_tree=major_tree, minor_tree=minor_tree)
                 truncals.append(
                     Truncal(
-                        truncal_major_cn=major_cn,
+                        truncal_total_cn=total_cn,
                         truncal_minor_cn=minor_cn,
                         tree=gain_tree,
                     )
@@ -35,18 +40,19 @@ class TruncalEnumerator:
 
     def enumerate_up_to(self, max_mrca_cn: int) -> List[Truncal]:
         truncals: List[Truncal] = []
-        for major_cn in range(1, max_mrca_cn + 1):
-            for minor_cn in range(1, major_cn + 1):
-                if major_cn + minor_cn > max_mrca_cn:
-                    continue
-                truncals.extend(self.enumerate_for_state(major_cn, minor_cn))
+        for total_cn in range(2, max_mrca_cn + 1):
+            for minor_cn in range(1, total_cn // 2 + 1):
+                truncals.extend(self.enumerate_for_state(total_cn, minor_cn))
         return truncals
 
 
 class BranchEnumerator:
-    def enumerate(self, truncal: Truncal, target_major_cn: int, target_minor_cn: int, max_events: int) -> List[Branch]:
-        if target_major_cn < 0 or target_minor_cn < 0:
+    def enumerate(self, truncal: Truncal, target_total_cn: int, target_minor_cn: int, max_events: int) -> List[Branch]:
+        if target_total_cn < 0 or target_minor_cn < 0:
             raise ValueError("Target copy numbers must be nonnegative.")
+        target_major_cn = target_total_cn - target_minor_cn
+        if target_major_cn < target_minor_cn:
+            raise ValueError("Minor copy number cannot exceed major copy number.")
 
         major_vectors = self._allele_vectors(truncal.truncal_major_cn, target_major_cn)
         minor_vectors = self._allele_vectors(truncal.truncal_minor_cn, target_minor_cn)
@@ -56,7 +62,12 @@ class BranchEnumerator:
         for major_vector in major_vectors:
             for minor_vector in minor_vectors:
                 copy_fate_vector = major_vector + minor_vector
-                branch = Branch(copy_fate_vector=copy_fate_vector, branch_index=next_index)
+                branch = Branch(
+                    copy_fate_vector=copy_fate_vector,
+                    branch_index=next_index,
+                    sample_total_cn=target_total_cn,
+                    sample_minor_cn=target_minor_cn,
+                )
                 next_index += 1
                 if branch.n_events <= max_events:
                     branches.append(branch)

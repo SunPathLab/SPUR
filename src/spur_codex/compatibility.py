@@ -8,9 +8,8 @@ from scipy.optimize import nnls
 
 from .encoding import RouteEncoder
 from .enumeration import RouteEnumerator
-from .objects import Route
+from .route import Route
 from .route_filter import split_routes
-from .tree import constraint_matrix
 
 
 @dataclass(frozen=True)
@@ -70,15 +69,10 @@ class PureGainCompatibilityChecker:
         routes = split_routes(all_routes).pure_gain
 
         candidates = []
-        n_joint_groups = sample1_cn[0] * sample2_cn[0]
+        n_joint_groups = (sample1_cn[0] - sample1_cn[1]) * (sample2_cn[0] - sample2_cn[1])
         for route in routes:
-            route_constraint = constraint_matrix(
-                route.truncal.tree.major_tree,
-                route.truncal.tree.minor_tree,
-                route.truncal.truncal_major_cn,
-                route.truncal.truncal_minor_cn,
-            )
-            H = self.encoder.h_tensor([route], sample1_cn[0], sample2_cn[0])
+            route_constraint = route.truncal.constraint_matrix
+            H = self.encoder.h_tensor([route])
             if H is None:
                 continue
             operator = H[0].T

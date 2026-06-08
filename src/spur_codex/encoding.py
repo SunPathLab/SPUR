@@ -4,49 +4,65 @@ from typing import Sequence
 
 import numpy as np
 
-from .objects import Route
-from .tree import constraint_matrix
-
+from .route import Route
 
 class RouteEncoder:
-    def copy_fate_matrices(self, routes: Sequence[Route]) -> tuple[np.ndarray, np.ndarray]:
+    def _copy_fate_matrices(self, routes: Sequence[Route]) -> tuple[np.ndarray, np.ndarray]:
         if not routes:
             return np.array([]), np.array([])
         branch1 = np.asarray([route.branch1.copy_fate_vector for route in routes], dtype=float)
         branch2 = np.asarray([route.branch2.copy_fate_vector for route in routes], dtype=float)
         return branch1, branch2
 
-    def multiplicity_matrices(self, routes: Sequence[Route]) -> tuple[np.ndarray, np.ndarray]:
+    def _multiplicity_matrices(self, routes: Sequence[Route]) -> tuple[np.ndarray, np.ndarray]:
         if not routes:
             return np.array([]), np.array([])
         truncal = routes[0].truncal
         for route in routes:
-            if route.truncal != truncal:
+            if route.truncal_key != truncal.canonical_key:
                 raise ValueError("Multiplicity matrices can only be built for routes sharing one truncal tree.")
 
-        matrix = constraint_matrix(
-            truncal.tree.major_tree,
-            truncal.tree.minor_tree,
-            truncal.truncal_major_cn,
-            truncal.truncal_minor_cn,
-        )
-        branch1, branch2 = self.copy_fate_matrices(routes)
+        matrix = truncal.constraint_matrix
+        branch1, branch2 = self._copy_fate_matrices(routes)
         return (matrix.T @ branch1.T).T, (matrix.T @ branch2.T).T
 
-    def paired_multiplicity_matrices(self, routes: Sequence[Route]) -> tuple[np.ndarray, np.ndarray]:
-        return self.multiplicity_matrices(routes)
+    def h_tensor(self, routes: Sequence[Route], dtype=np.float32) -> np.ndarray | None:
+        if not routes:
+            return None
+        first = routes[0]
+        for route in routes:
+            if route.sample1_total_cn != first.sample1_total_cn or route.sample1_minor_cn != first.sample1_minor_cn:
+                raise ValueError("H tensor routes must share sample 1 total/minor CN.")
+            if route.sample2_total_cn != first.sample2_total_cn or route.sample2_minor_cn != first.sample2_minor_cn:
+                raise ValueError("H tensor routes must share sample 2 total/minor CN.")
+        matrix1, matrix2 = self._multiplicity_matrices(routes)
+        return build_paired_h(
+            matrix1,
+            matrix2,
+            sample1_total_cn=first.sample1_total_cn,
+            sample1_minor_cn=first.sample1_minor_cn,
+            sample2_total_cn=first.sample2_total_cn,
+            sample2_minor_cn=first.sample2_minor_cn,
+            dtype=dtype,
+        )
 
-    def h_tensor(self, routes: Sequence[Route], sample1_major_cn: int, sample2_major_cn: int, dtype=np.float32) -> np.ndarray | None:
-        matrix1, matrix2 = self.paired_multiplicity_matrices(routes)
-        return build_paired_h(matrix1, matrix2, sample1_major_cn, sample2_major_cn, dtype=dtype)
 
-
-def build_paired_h(matrix1: np.ndarray, matrix2: np.ndarray, sample1_major_cn: int, sample2_major_cn: int, dtype=np.float32) -> np.ndarray | None:
+def build_paired_h(
+    matrix1: np.ndarray,
+    matrix2: np.ndarray,
+    sample1_total_cn: int,
+    sample1_minor_cn: int,
+    sample2_total_cn: int,
+    sample2_minor_cn: int,
+    dtype=np.float32,
+) -> np.ndarray | None:
     if matrix1.shape[0] == 0 or matrix2.shape[0] == 0:
         return None
     if matrix1.shape != matrix2.shape:
         raise ValueError("Paired H construction requires matrix1 and matrix2 to have the same shape.")
 
+    sample1_major_cn = sample1_total_cn - sample1_minor_cn
+    sample2_major_cn = sample2_total_cn - sample2_minor_cn
     n_routes, n_events = matrix1.shape
     n_joint_groups = sample1_major_cn * sample2_major_cn
     H = np.zeros((n_routes, n_events, n_joint_groups), dtype=dtype)

@@ -3,9 +3,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Optional
 
-import numpy as np
-
-
 @dataclass
 class TreeNode:
     left: Optional["TreeNode"] = None
@@ -89,25 +86,3 @@ def tree_shape(root: TreeNode) -> str:
 
 def union_tree_shape(major_tree: TreeNode, minor_tree: TreeNode) -> str:
     return f"major={tree_shape(major_tree)};minor={tree_shape(minor_tree)}"
-
-
-def constraint_matrix(major_tree: TreeNode, minor_tree: TreeNode, major_cn: int, minor_cn: int) -> np.ndarray:
-    # traverse paths from root to each leave
-    major_paths = leaf_to_root_paths(major_tree)
-    minor_paths = leaf_to_root_paths(minor_tree)
-    
-    # shape of major block: (number of major alleles, number of major tree time durations)
-    major_block = np.zeros((major_cn, 2 * major_cn - 1), dtype=int)
-    for row, path in enumerate(major_paths):
-        for col in path:
-            major_block[row, col] = 1
-
-    # shape of minor block: (number of minor alleles, number of minor tree time durations)
-    minor_block = np.zeros((minor_cn, 2 * minor_cn - 1), dtype=int)
-    for row, path in enumerate(minor_paths):
-        for col in path:
-            minor_block[row, col] = 1
-
-    top_right = np.zeros((major_block.shape[0], minor_block.shape[1]), dtype=int)
-    bottom_left = np.zeros((minor_block.shape[0], major_block.shape[1]), dtype=int)
-    return np.block([[major_block, top_right], [bottom_left, minor_block]])

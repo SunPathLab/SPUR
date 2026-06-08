@@ -2,14 +2,14 @@ import numpy as np
 
 from spur_codex.compatibility import PureGainCompatibilityChecker
 from spur_codex.enumeration import RouteEnumerator
-from spur_codex.objects import RouteType
+from spur_codex.route import RouteType
 from spur_codex.simulation import sample_route_jmd
 
 
 def test_pure_gain_route_jmd_is_pure_gain_compatible():
     rng = np.random.default_rng(1)
-    sample1_cn = (2, 1)
-    sample2_cn = (2, 1)
+    sample1_cn = (3, 1)
+    sample2_cn = (3, 1)
     route = RouteEnumerator().enumerate(
         sample1_cn,
         sample2_cn,
@@ -26,8 +26,8 @@ def test_pure_gain_route_jmd_is_pure_gain_compatible():
 
 def test_some_mixed_gain_loss_jmd_is_conclusive():
     rng = np.random.default_rng(2)
-    sample1_cn = (2, 2)
-    sample2_cn = (2, 1)
+    sample1_cn = (4, 2)
+    sample2_cn = (3, 1)
     routes = RouteEnumerator().enumerate(
         sample1_cn,
         sample2_cn,

@@ -11,7 +11,7 @@ import numpy as np
 from spur_codex.compatibility import PureGainCompatibilityChecker
 from spur_codex.enumeration import RouteEnumerator
 from spur_codex.notation import parse_between_sample_cn, total_minor_label
-from spur_codex.objects import Route
+from spur_codex.route import Route
 from spur_codex.route_filter import split_routes
 from spur_codex.simulation import sample_route_jmd
 
@@ -89,14 +89,14 @@ def select_cn_pairs(path: Path, n_pairs: int, max_total_cn: int) -> list[tuple[t
         reader = csv.DictReader(f, delimiter="\t")
         for row in reader:
             sample1, sample2 = parse_between_sample_cn(row["between_sample_cn"])
-            if sum(sample1) > max_total_cn or sum(sample2) > max_total_cn:
+            if sample1[0] > max_total_cn or sample2[0] > max_total_cn:
                 continue
             counts[canonical_pair(sample1, sample2)] += 1
     return [pair for pair, _ in counts.most_common(n_pairs)]
 
 
 def canonical_pair(sample1_cn: tuple[int, int], sample2_cn: tuple[int, int]) -> tuple[tuple[int, int], tuple[int, int]]:
-    return tuple(sorted((sample1_cn, sample2_cn), key=lambda x: (sum(x), x[1], x[0]), reverse=True))  # type: ignore[return-value]
+    return tuple(sorted((sample1_cn, sample2_cn), key=lambda x: (x[0], x[1]), reverse=True))  # type: ignore[return-value]
 
 
 def simulate_class(
@@ -138,11 +138,11 @@ def simulate_class(
                 "npz_path": npz_name,
                 "sample1_cn": total_minor_label(sample1_cn),
                 "sample2_cn": total_minor_label(sample2_cn),
-                "sample1_major_cn": sample1_cn[0],
+                "sample1_total_cn": sample1_cn[0],
                 "sample1_minor_cn": sample1_cn[1],
-                "sample2_major_cn": sample2_cn[0],
+                "sample2_total_cn": sample2_cn[0],
                 "sample2_minor_cn": sample2_cn[1],
-                "mrca_major_cn": route.truncal.truncal_major_cn,
+                "mrca_total_cn": route.truncal.truncal_total_cn,
                 "mrca_minor_cn": route.truncal.truncal_minor_cn,
                 "truncal_key": route.truncal_key,
                 "branch1_index": route.branch1.branch_index,

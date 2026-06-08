@@ -47,9 +47,9 @@ def main() -> None:
             {
                 "sample1_cn": total_minor_label(sample1_cn),
                 "sample2_cn": total_minor_label(sample2_cn),
-                "sample1_major_cn": sample1_cn[0],
+                "sample1_total_cn": sample1_cn[0],
                 "sample1_minor_cn": sample1_cn[1],
-                "sample2_major_cn": sample2_cn[0],
+                "sample2_total_cn": sample2_cn[0],
                 "sample2_minor_cn": sample2_cn[1],
                 "max_mrca_cn": max_mrca_cn,
                 "max_branch_events": args.max_branch_events,
@@ -85,11 +85,11 @@ def observed_cn_pairs_from_tsv(path: Path) -> list[tuple[tuple[int, int], tuple[
         for row in reader:
             sample1_cn, sample2_cn = parse_between_sample_cn(row["between_sample_cn"])
             pairs.add(canonical_cn_pair(sample1_cn, sample2_cn))
-    return sorted(pairs, key=lambda pair: (sum(pair[0]), pair[0][1], pair[0][0], sum(pair[1]), pair[1][1], pair[1][0]))
+    return sorted(pairs, key=lambda pair: (pair[0][0], pair[0][1], pair[1][0], pair[1][1]))
 
 
 def pair_max_mrca_cn(sample1_cn: tuple[int, int], sample2_cn: tuple[int, int]) -> int:
-    return min(max(sum(sample1_cn), sum(sample2_cn)) + 2, 6)
+    return min(max(sample1_cn[0], sample2_cn[0]) + 2, 6)
 
 
 if __name__ == "__main__":

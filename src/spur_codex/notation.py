@@ -23,7 +23,11 @@ class CopyNumberState:
         return self.total_cn - self.minor_cn
 
     @property
-    def allele_tuple(self) -> tuple[int, int]:
+    def cn_tuple(self) -> tuple[int, int]:
+        return self.total_cn, self.minor_cn
+
+    @property
+    def major_minor_tuple(self) -> tuple[int, int]:
         return self.major_cn, self.minor_cn
 
     @property
@@ -36,9 +40,9 @@ class CopyNumberState:
         return cls(total_cn=total_cn, minor_cn=minor_cn)
 
     @classmethod
-    def from_allele_tuple(cls, cn: tuple[int, int]) -> "CopyNumberState":
-        major_cn, minor_cn = cn
-        return cls(total_cn=major_cn + minor_cn, minor_cn=minor_cn)
+    def from_tuple(cls, cn: tuple[int, int]) -> "CopyNumberState":
+        total_cn, minor_cn = cn
+        return cls(total_cn=total_cn, minor_cn=minor_cn)
 
 
 @dataclass(frozen=True)
@@ -47,12 +51,12 @@ class CopyNumberPair:
     sample2: CopyNumberState
 
     @property
-    def sample1_allele_tuple(self) -> tuple[int, int]:
-        return self.sample1.allele_tuple
+    def sample1_cn_tuple(self) -> tuple[int, int]:
+        return self.sample1.cn_tuple
 
     @property
-    def sample2_allele_tuple(self) -> tuple[int, int]:
-        return self.sample2.allele_tuple
+    def sample2_cn_tuple(self) -> tuple[int, int]:
+        return self.sample2.cn_tuple
 
     @property
     def label(self) -> str:
@@ -76,25 +80,25 @@ class CopyNumberPair:
 
 
 def total_minor_label(cn: tuple[int, int]) -> str:
-    return CopyNumberState.from_allele_tuple(cn).label
+    return CopyNumberState.from_tuple(cn).label
 
 
 def canonical_cn_pair(sample1_cn: tuple[int, int], sample2_cn: tuple[int, int]) -> tuple[tuple[int, int], tuple[int, int]]:
     pair = CopyNumberPair(
-        sample1=CopyNumberState.from_allele_tuple(sample1_cn),
-        sample2=CopyNumberState.from_allele_tuple(sample2_cn),
+        sample1=CopyNumberState.from_tuple(sample1_cn),
+        sample2=CopyNumberState.from_tuple(sample2_cn),
     ).canonical()
-    return pair.sample1_allele_tuple, pair.sample2_allele_tuple
+    return pair.sample1_cn_tuple, pair.sample2_cn_tuple
 
 
 def parse_between_sample_cn(value: str) -> tuple[tuple[int, int], tuple[int, int]]:
     pair = CopyNumberPair.from_label(value).canonical()
-    return pair.sample1_allele_tuple, pair.sample2_allele_tuple
+    return pair.sample1_cn_tuple, pair.sample2_cn_tuple
 
 
-def allele_cn_label(major_cn: int, minor_cn: int) -> str:
-    return f"major={major_cn},minor={minor_cn}"
+def truncal_key(total_cn: int, minor_cn: int, tree_shape: str) -> str:
+    return f"truncal_{total_cn}:{minor_cn}_{tree_shape}"
 
 
-def truncal_key(major_cn: int, minor_cn: int, tree_shape: str) -> str:
-    return f"truncal_major{major_cn}_minor{minor_cn}_{tree_shape}"
+def to_major_minor_tuple(cn: tuple[int, int]) -> tuple[int, int]:
+    return CopyNumberState.from_tuple(cn).major_minor_tuple

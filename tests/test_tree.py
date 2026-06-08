@@ -1,10 +1,10 @@
 import numpy as np
 
+from spur_codex.route import GainHistoryTree, Truncal
 from spur_codex.tree import (
     TreeNode,
     all_full_binary_trees,
     assign_node_ids,
-    constraint_matrix,
     leaf_to_root_paths,
     tree_shape,
     union_tree_shape,
@@ -73,9 +73,9 @@ def test_leaf_to_root_paths_requires_node_ids():
         raise AssertionError("Expected ValueError before assigning node IDs")
 
 
-# Verifies that the constraint matrix keeps major and minor allele tree blocks
-# separate and places path indicators in the expected columns.
-def test_constraint_matrix_has_major_and_minor_blocks():
+# Verifies that the truncal constraint matrix keeps major and minor allele tree
+# blocks separate and places path indicators in the expected columns.
+def test_truncal_constraint_matrix_has_major_and_minor_blocks():
     # Major tree: 2 leaves
     # Minor tree: 1 leaf
     major_tree = TreeNode(left=TreeNode(), right=TreeNode())
@@ -83,7 +83,12 @@ def test_constraint_matrix_has_major_and_minor_blocks():
     assign_node_ids(major_tree)
     assign_node_ids(minor_tree)
 
-    matrix = constraint_matrix(major_tree, minor_tree, major_cn=2, minor_cn=1)
+    truncal = Truncal(
+        truncal_total_cn=3,
+        truncal_minor_cn=1,
+        tree=GainHistoryTree(major_tree=major_tree, minor_tree=minor_tree),
+    )
+    matrix = truncal.constraint_matrix
 
     expected = np.array(
         [

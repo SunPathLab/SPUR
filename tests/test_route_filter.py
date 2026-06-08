@@ -1,12 +1,12 @@
 import numpy as np
 
 from spur_codex.enumeration import RouteEnumerator
-from spur_codex.objects import RouteType
+from spur_codex.route import RouteType
 from spur_codex.route_filter import collect_h_by_truncal, filter_routes, group_by_truncal, split_routes
 
 
 def test_split_routes_matches_route_type_filters():
-    routes = RouteEnumerator().enumerate((2, 2), (2, 1), max_mrca_cn=6, max_branch_events=3)
+    routes = RouteEnumerator().enumerate((4, 2), (3, 1), max_mrca_cn=6, max_branch_events=3)
     split = split_routes(routes)
 
     assert split.pure_gain == filter_routes(routes, RouteType.PURE_GAIN)
@@ -15,7 +15,7 @@ def test_split_routes_matches_route_type_filters():
 
 
 def test_group_by_truncal_uses_canonical_key():
-    routes = RouteEnumerator().enumerate((2, 1), (2, 1), max_mrca_cn=4, max_branch_events=2)
+    routes = RouteEnumerator().enumerate((3, 1), (3, 1), max_mrca_cn=4, max_branch_events=2)
     groups = group_by_truncal(routes)
 
     assert len(groups) > 1
@@ -29,19 +29,19 @@ def test_group_by_truncal_uses_canonical_key():
 
 
 def test_route_h_matches_group_h_tensor_slice():
-    routes = RouteEnumerator().enumerate((2, 1), (2, 1), max_mrca_cn=4, max_branch_events=2)
+    routes = RouteEnumerator().enumerate((3, 1), (3, 1), max_mrca_cn=4, max_branch_events=2)
     group = group_by_truncal(routes)[0]
 
-    H = group.h_tensor(sample1_major_cn=2, sample2_major_cn=2)
+    H = group.h_tensor()
 
     assert H.shape[0] == len(group.routes)
-    assert np.array_equal(group.routes[0].h(2, 2), H[0])
+    assert np.array_equal(group.routes[0].h(), H[0])
 
 
 def test_collect_h_by_truncal_returns_one_tensor_per_group():
-    routes = RouteEnumerator().enumerate((2, 1), (2, 1), max_mrca_cn=4, max_branch_events=2)
+    routes = RouteEnumerator().enumerate((3, 1), (3, 1), max_mrca_cn=4, max_branch_events=2)
     groups = group_by_truncal(routes)
-    by_key = collect_h_by_truncal(routes, sample1_major_cn=2, sample2_major_cn=2)
+    by_key = collect_h_by_truncal(routes)
 
     assert set(by_key) == {group.truncal_key for group in groups}
     for group in groups:

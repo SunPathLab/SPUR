@@ -1,10 +1,10 @@
-from .objects import Branch, GainHistoryTree, Route, RouteType, Truncal
+from .route import Branch, GainHistoryTree, Route, RouteType, Truncal
 from .enumeration import BranchEnumerator, RouteEnumerator, TruncalEnumerator
 from .encoding import RouteEncoder
-from .scoring import THBScorer
+from .scoring import Scorer
 from .compatibility import PureGainCompatibilityChecker
-from .notation import CopyNumberPair, CopyNumberState, allele_cn_label, canonical_cn_pair, parse_between_sample_cn, total_minor_label, truncal_key
-from .route_filter import RouteGroup, RouteSplit, collect_h_by_truncal, filter_routes, group_by_truncal, split_routes
+from .notation import CopyNumberPair, CopyNumberState, canonical_cn_pair, parse_between_sample_cn, to_major_minor_tuple, total_minor_label, truncal_key
+from .route_filter import RouteGroupByTruncal, RouteSplit, collect_h_by_truncal, filter_routes, group_by_truncal, split_routes
 
 __all__ = [
     "Branch",
@@ -15,20 +15,20 @@ __all__ = [
     "PureGainCompatibilityChecker",
     "Route",
     "RouteEncoder",
-    "RouteGroup",
+    "RouteGroupByTruncal",
     "RouteEnumerator",
     "RouteSplit",
     "RouteType",
-    "THBScorer",
+    "Scorer",
     "Truncal",
     "TruncalEnumerator",
-    "allele_cn_label",
     "canonical_cn_pair",
     "collect_h_by_truncal",
     "filter_routes",
     "group_by_truncal",
     "parse_between_sample_cn",
     "split_routes",
+    "to_major_minor_tuple",
     "total_minor_label",
     "truncal_key",
 ]

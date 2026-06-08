@@ -7,10 +7,31 @@ from typing import Callable, Iterable, Sequence
 import numpy as np
 
 from .encoding import RouteEncoder
-from .objects import Route, RouteType
+from .route import Route, RouteType
 
 
 RoutePredicate = Callable[[Route], bool]
+
+
+class RouteFilter:
+    @staticmethod
+    def filter_by_total_events(routes: tuple[Route, ...], threshold: int) -> tuple[Route, ...]:
+        return [route for route in routes if route.total_events <= threshold]
+
+    @staticmethod
+    def filter_by_max_branch_events(routes: tuple[Route, ...], threshold: int) -> tuple[Route, ...]:
+        return [route for route in routes if np.max((route.branch1.n_events, route.branch2.n_events)) <= threshold]
+
+    @staticmethod
+    def filter_by_total_branch_events(routes: tuple[Route, ...], threshold: int) -> tuple[Route, ...]:
+        return [route for route in routes if route.branch1.n_events + route.branch2.n_events <= threshold]
+    
+    @staticmethod
+    def filter_by_single_sample_total_events(routes: tuple[Route, ...], threshold: int) -> tuple[Route, ...]:
+        return [route for route in routes if np.max((route.truncal.n_events + route.branch1.n_events,
+                                                     route.truncal.n_events + route.branch2.n_events)) <= threshold]
+
+
 
 
 @dataclass(frozen=True)
@@ -20,7 +41,7 @@ class RouteSplit:
 
 
 @dataclass(frozen=True)
-class RouteGroup:
+class RouteGroupByTruncal:
     truncal_key: str
     routes: tuple[Route, ...]
 
@@ -28,11 +49,9 @@ class RouteGroup:
     def truncal(self):
         return self.routes[0].truncal
 
-    def h_tensor(self, sample1_major_cn: int, sample2_major_cn: int, dtype=np.float32) -> np.ndarray:
+    def h_tensor(self, dtype=np.float32) -> np.ndarray:
         tensor = RouteEncoder().h_tensor(
             self.routes,
-            sample1_major_cn=sample1_major_cn,
-            sample2_major_cn=sample2_major_cn,
             dtype=dtype,
         )
         if tensor is None:
@@ -66,24 +85,17 @@ def split_routes(routes: Iterable[Route]) -> RouteSplit:
     return RouteSplit(pure_gain=tuple(pure_gain), mixed_gain_loss=tuple(mixed_gain_loss))
 
 
-def group_by_truncal(routes: Iterable[Route]) -> tuple[RouteGroup, ...]:
+def group_by_truncal(routes: Iterable[Route]) -> tuple[RouteGroupByTruncal, ...]:
     grouped: dict[str, list[Route]] = defaultdict(list)
     for route in routes:
         grouped[route.truncal_key].append(route)
-    return tuple(RouteGroup(truncal_key=key, routes=tuple(value)) for key, value in grouped.items())
-
+    return tuple(RouteGroupByTruncal(truncal_key=key, routes=tuple(value)) for key, value in grouped.items())
 
 def collect_h_by_truncal(
     routes: Sequence[Route],
-    sample1_major_cn: int,
-    sample2_major_cn: int,
     dtype=np.float32,
 ) -> dict[str, np.ndarray]:
     return {
-        group.truncal_key: group.h_tensor(
-            sample1_major_cn=sample1_major_cn,
-            sample2_major_cn=sample2_major_cn,
-            dtype=dtype,
-        )
+        group.truncal_key: group.h_tensor(dtype=dtype)
         for group in group_by_truncal(routes)
     }

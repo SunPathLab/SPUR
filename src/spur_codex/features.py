@@ -1,13 +1,30 @@
 from __future__ import annotations
+from dataclasses import dataclass
 
 import numpy as np
 from scipy.special import logsumexp
 
+from spur_codex.route import Route
 
-def score_features(pure_gain_scores: np.ndarray, mixed_gain_loss_scores: np.ndarray) -> dict[str, float | int]:
-    pure_gain_scores = np.asarray(pure_gain_scores, dtype=float)
-    mixed_gain_loss_scores = np.asarray(mixed_gain_loss_scores, dtype=float)
-    all_scores = np.concatenate([pure_gain_scores, mixed_gain_loss_scores])
+@dataclass(frozen=True)
+class RouteScoreResult:
+    routes: tuple[Route, ...]
+    scores: np.ndarray
+
+    def score_features(self) -> dict[str, float | int]:
+        return score_features(self)
+
+    
+    def route_score_table(self, seed: int) -> dict[str, list[str] | np.ndarray]:
+        return route_score_table(self, seed)
+        
+
+def score_features(route_score_result: RouteScoreResult) -> dict[str, float | int]:
+    
+    pure_gain_mask = np.array([route.is_pure_gain for route in route_score_result.routes])
+    pure_gain_scores = route_score_result.scores[pure_gain_mask]
+    mixed_gain_loss_scores = route_score_result.scores[~pure_gain_mask]
+    all_scores = route_score_result.scores
 
     best_pg = float(np.max(pure_gain_scores))
     best_mgl = float(np.max(mixed_gain_loss_scores))
@@ -25,3 +42,20 @@ def score_features(pure_gain_scores: np.ndarray, mixed_gain_loss_scores: np.ndar
         "n_mixed_gain_loss_routes": int(len(mixed_gain_loss_scores)),
         "frac_mixed_gain_loss_ge_best_pg": float(np.mean(mixed_gain_loss_scores >= best_pg)),
     }
+    
+    
+def route_score_table(route_score_result: RouteScoreResult, seed: int) -> dict[str, list[str] | np.ndarray]:
+    
+    # route information
+    route_score_dictionary = {
+      "truncal": [r.truncal_key for r in route_score_result.routes],
+      "branch1": [r.branch1.canonical_key for r in route_score_result.routes],
+      "branch2": [r.branch2.canonical_key for r in route_score_result.routes],
+    }
+
+    # route score
+    route_score_dictionary["score_seed_" + str(seed)] = route_score_result.scores
+        
+    return route_score_dictionary
+    
+    

@@ -55,9 +55,9 @@ def main() -> None:
             {
                 "sample1_cn": total_minor_label(sample1_cn),
                 "sample2_cn": total_minor_label(sample2_cn),
-                "sample1_major_cn": sample1_cn[0],
+                "sample1_total_cn": sample1_cn[0],
                 "sample1_minor_cn": sample1_cn[1],
-                "sample2_major_cn": sample2_cn[0],
+                "sample2_total_cn": sample2_cn[0],
                 "sample2_minor_cn": sample2_cn[1],
                 "cn_tsv": args.cn_tsv,
                 "max_mrca_cn": max_mrca_cn,
@@ -92,18 +92,17 @@ def observed_cn_pairs_from_tsv(path: Path, max_total_cn: int | None) -> list[tup
         reader = csv.DictReader(f, delimiter="\t")
         for row in reader:
             sample1_cn, sample2_cn = parse_between_sample_cn(row["between_sample_cn"])
-            if max_total_cn is not None and (sum(sample1_cn) > max_total_cn or sum(sample2_cn) > max_total_cn):
+            if max_total_cn is not None and (sample1_cn[0] > max_total_cn or sample2_cn[0] > max_total_cn):
                 continue
             pairs.add(canonical_cn_pair(sample1_cn, sample2_cn))
-    return sorted(pairs, key=lambda pair: (sum(pair[0]), pair[0][1], pair[0][0], sum(pair[1]), pair[1][1], pair[1][0]))
+    return sorted(pairs, key=lambda pair: (pair[0][0], pair[0][1], pair[1][0], pair[1][1]))
 
 
 def synthetic_observed_cn_pairs(max_total_cn: int) -> list[tuple[tuple[int, int], tuple[int, int]]]:
     states = []
     for total_cn in range(2, max_total_cn + 1):
         for minor_cn in range(1, total_cn // 2 + 1):
-            major_cn = total_cn - minor_cn
-            states.append((major_cn, minor_cn))
+            states.append((total_cn, minor_cn))
 
     pairs = []
     for i, sample1_cn in enumerate(states):
@@ -113,7 +112,7 @@ def synthetic_observed_cn_pairs(max_total_cn: int) -> list[tuple[tuple[int, int]
 
 
 def pair_max_mrca_cn(sample1_cn: tuple[int, int], sample2_cn: tuple[int, int]) -> int:
-    return min(max(sum(sample1_cn), sum(sample2_cn)) + 2, 6)
+    return min(max(sample1_cn[0], sample2_cn[0]) + 2, 6)
 
 
 if __name__ == "__main__":
