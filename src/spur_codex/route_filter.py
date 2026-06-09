@@ -91,6 +91,7 @@ def group_by_truncal(routes: Iterable[Route]) -> tuple[RouteGroupByTruncal, ...]
         grouped[route.truncal_key].append(route)
     return tuple(RouteGroupByTruncal(truncal_key=key, routes=tuple(value)) for key, value in grouped.items())
 
+
 def collect_h_by_truncal(
     routes: Sequence[Route],
     dtype=np.float32,

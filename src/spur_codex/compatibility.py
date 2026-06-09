@@ -21,8 +21,19 @@ class PureGainFeasibilityCandidate:
 
 
 class PureGainCompatibilityChecker:
-    def __init__(self, max_mrca_cn: int, max_branch_events: int, atol: float = 1e-8):
-        self.max_mrca_cn = max_mrca_cn
+    def __init__(
+        self,
+        max_truncal_cn: int | None = None,
+        max_branch_events: int = 5,
+        atol: float = 1e-8,
+        *,
+        max_mrca_cn: int | None = None,
+    ):
+        if max_truncal_cn is None:
+            if max_mrca_cn is None:
+                raise TypeError("max_truncal_cn is required.")
+            max_truncal_cn = max_mrca_cn
+        self.max_truncal_cn = max_truncal_cn
         self.max_branch_events = max_branch_events
         self.atol = atol
         self.encoder = RouteEncoder()
@@ -63,7 +74,7 @@ class PureGainCompatibilityChecker:
         all_routes = RouteEnumerator().enumerate(
             sample1_cn=sample1_cn,
             sample2_cn=sample2_cn,
-            max_mrca_cn=self.max_mrca_cn,
+            max_truncal_cn=self.max_truncal_cn,
             max_branch_events=self.max_branch_events,
         )
         routes = split_routes(all_routes).pure_gain

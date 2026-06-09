@@ -16,8 +16,8 @@ from spur_codex.tree import union_tree_shape
 @dataclass(frozen=True)
 class RouteRecord:
     source: str
-    mrca_total_cn: int
-    mrca_minor_cn: int
+    truncal_total_cn: int
+    truncal_minor_cn: int
     canonical_tree: str
     branch1_fate: tuple[int, ...]
     branch2_fate: tuple[int, ...]
@@ -28,8 +28,8 @@ class RouteRecord:
     @property
     def key(self) -> tuple[int, int, str, tuple[int, ...], tuple[int, ...]]:
         return (
-            self.mrca_total_cn,
-            self.mrca_minor_cn,
+            self.truncal_total_cn,
+            self.truncal_minor_cn,
             self.canonical_tree,
             self.branch1_fate,
             self.branch2_fate,
@@ -43,7 +43,7 @@ def main() -> None:
     parser.add_argument("--sample1-minor-cn", type=int, default=2)
     parser.add_argument("--sample2-total-cn", type=int, default=3)
     parser.add_argument("--sample2-minor-cn", type=int, default=1)
-    parser.add_argument("--max-mrca-cn", type=int, default=6)
+    parser.add_argument("--max-truncal-cn", "--max-mrca-cn", dest="max_truncal_cn", type=int, default=6)
     parser.add_argument("--max-branch-events", type=int, default=5)
     parser.add_argument("--out", default="route_comparison/4_2_vs_3_1_old_spur_vs_codex.tsv")
     parser.add_argument("--fate-out", default="route_comparison/4_2_vs_3_1_old_spur_vs_codex_fate_vectors.tsv")
@@ -56,13 +56,13 @@ def main() -> None:
         old_spur_src=Path(args.old_spur_src),
         sample1_cn=sample1_cn,
         sample2_cn=sample2_cn,
-        max_mrca_cn=args.max_mrca_cn,
+        max_truncal_cn=args.max_truncal_cn,
         max_branch_events=args.max_branch_events,
     )
     codex_records = codex_both_deletion_records(
         sample1_cn=sample1_cn,
         sample2_cn=sample2_cn,
-        max_mrca_cn=args.max_mrca_cn,
+        max_truncal_cn=args.max_truncal_cn,
         max_branch_events=args.max_branch_events,
     )
 
@@ -81,8 +81,8 @@ def main() -> None:
                 "present_in_spur_codex",
                 "observed_sample1_cn",
                 "observed_sample2_cn",
-                "mrca_total_cn",
-                "mrca_minor_cn",
+                "truncal_total_cn",
+                "truncal_minor_cn",
                 "canonical_tree",
                 "old_tree_index",
                 "old_branch1_index",
@@ -117,8 +117,8 @@ def main() -> None:
                     "present_in_spur_codex": int(present_codex),
                     "observed_sample1_cn": total_minor_label(sample1_cn),
                     "observed_sample2_cn": total_minor_label(sample2_cn),
-                    "mrca_total_cn": record.mrca_total_cn,
-                    "mrca_minor_cn": record.mrca_minor_cn,
+                    "truncal_total_cn": record.truncal_total_cn,
+                    "truncal_minor_cn": record.truncal_minor_cn,
                     "canonical_tree": record.canonical_tree,
                     "old_tree_index": "" if old is None else old.tree_index,
                     "old_branch1_index": "" if old is None else old.branch1_index,
@@ -157,7 +157,7 @@ def old_spur_complex_records(
     old_spur_src: Path,
     sample1_cn: tuple[int, int],
     sample2_cn: tuple[int, int],
-    max_mrca_cn: int,
+    max_truncal_cn: int,
     max_branch_events: int,
 ) -> list[RouteRecord]:
     old_src = old_spur_src.resolve()
@@ -168,7 +168,7 @@ def old_spur_complex_records(
     sample1_major_minor = to_major_minor_tuple(sample1_cn)
     sample2_major_minor = to_major_minor_tuple(sample2_cn)
     records = []
-    for major_cn, minor_cn in mrca_states(max_mrca_cn):
+    for major_cn, minor_cn in truncal_states(max_truncal_cn):
         total_cn = major_cn + minor_cn
         for tree_index, mrca in enumerate(MRCARouteTreeCollection(major_cn, minor_cn).all_route_tree_collection):
             branch1 = mrca.get_complex_routes_multiplication_vector(sample1_major_minor[0], sample1_major_minor[1], max_branch_events)
@@ -180,8 +180,8 @@ def old_spur_complex_records(
                     records.append(
                         RouteRecord(
                             source="old_spur",
-                            mrca_total_cn=total_cn,
-                            mrca_minor_cn=minor_cn,
+                            truncal_total_cn=total_cn,
+                            truncal_minor_cn=minor_cn,
                             canonical_tree=f"truncal_{total_cn}:{minor_cn}_{union_tree_shape(mrca.major_tree, mrca.minor_tree)}",
                             branch1_fate=array_to_tuple(fate1),
                             branch2_fate=array_to_tuple(fate2),
@@ -212,8 +212,8 @@ def write_fate_comparison(
                 "codex_count",
                 "observed_sample1_cn",
                 "observed_sample2_cn",
-                "mrca_total_cn",
-                "mrca_minor_cn",
+                "truncal_total_cn",
+                "truncal_minor_cn",
                 "canonical_tree",
                 "branch1_fate",
                 "branch2_fate",
@@ -235,8 +235,8 @@ def write_fate_comparison(
                     "codex_count": codex_count,
                     "observed_sample1_cn": total_minor_label(sample1_cn),
                     "observed_sample2_cn": total_minor_label(sample2_cn),
-                    "mrca_total_cn": total_cn,
-                    "mrca_minor_cn": minor_cn,
+                    "truncal_total_cn": total_cn,
+                    "truncal_minor_cn": minor_cn,
                     "canonical_tree": canonical_tree,
                     "branch1_fate": vector_label(branch1_fate),
                     "branch2_fate": vector_label(branch2_fate),
@@ -249,7 +249,7 @@ def write_fate_comparison(
 def fate_multiset(records: list[RouteRecord]) -> dict[tuple[int, int, tuple[int, ...], tuple[int, ...]], int]:
     counts: dict[tuple[int, int, tuple[int, ...], tuple[int, ...]], int] = {}
     for record in records:
-        key = (record.mrca_total_cn, record.mrca_minor_cn, record.branch1_fate, record.branch2_fate)
+        key = (record.truncal_total_cn, record.truncal_minor_cn, record.branch1_fate, record.branch2_fate)
         counts[key] = counts.get(key, 0) + 1
     return counts
 
@@ -258,8 +258,8 @@ def canonical_tree_multiset(records: list[RouteRecord]) -> dict[tuple[int, int, 
     counts: dict[tuple[int, int, str, tuple[int, ...], tuple[int, ...]], int] = {}
     for record in records:
         key = (
-            record.mrca_total_cn,
-            record.mrca_minor_cn,
+            record.truncal_total_cn,
+            record.truncal_minor_cn,
             record.canonical_tree,
             record.branch1_fate,
             record.branch2_fate,
@@ -271,13 +271,13 @@ def canonical_tree_multiset(records: list[RouteRecord]) -> dict[tuple[int, int, 
 def codex_both_deletion_records(
     sample1_cn: tuple[int, int],
     sample2_cn: tuple[int, int],
-    max_mrca_cn: int,
+    max_truncal_cn: int,
     max_branch_events: int,
 ) -> list[RouteRecord]:
     routes = RouteEnumerator().enumerate(
         sample1_cn=sample1_cn,
         sample2_cn=sample2_cn,
-        max_mrca_cn=max_mrca_cn,
+        max_truncal_cn=max_truncal_cn,
         max_branch_events=max_branch_events,
     )
     records = []
@@ -287,8 +287,8 @@ def codex_both_deletion_records(
         records.append(
             RouteRecord(
                 source="spur_codex",
-                mrca_total_cn=route.truncal.truncal_total_cn,
-                mrca_minor_cn=route.truncal.truncal_minor_cn,
+                truncal_total_cn=route.truncal.truncal_total_cn,
+                truncal_minor_cn=route.truncal.truncal_minor_cn,
                 canonical_tree=route.truncal.canonical_key,
                 branch1_fate=route.branch1.copy_fate_vector,
                 branch2_fate=route.branch2.copy_fate_vector,
@@ -299,12 +299,12 @@ def codex_both_deletion_records(
     return records
 
 
-def mrca_states(max_mrca_cn: int) -> list[tuple[int, int]]:
+def truncal_states(max_truncal_cn: int) -> list[tuple[int, int]]:
     return [
         (major_cn, minor_cn)
-        for major_cn in range(1, max_mrca_cn)
+        for major_cn in range(1, max_truncal_cn)
         for minor_cn in range(1, major_cn + 1)
-        if major_cn + minor_cn <= max_mrca_cn
+        if major_cn + minor_cn <= max_truncal_cn
     ]
 
 

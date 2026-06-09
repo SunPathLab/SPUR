@@ -90,7 +90,7 @@ def test_scorer_score_returns_route_score_result_for_alt_depth_arrays():
     routes = RouteEnumerator().enumerate(
         (3, 1),
         (3, 1),
-        max_mrca_cn=3,
+        max_truncal_cn=3,
         max_branch_events=2,
         route_type=RouteType.PURE_GAIN,
     )

@@ -17,18 +17,18 @@ def test_branch_enumerator_uses_copy_fate_event_filter():
 
 def test_route_enumerator_splits_all_routes_into_pure_gain_and_mixed_gain_loss():
     enumerator = RouteEnumerator()
-    all_routes = enumerator.enumerate((4, 2), (3, 1), max_mrca_cn=6, max_branch_events=3)
+    all_routes = enumerator.enumerate((4, 2), (3, 1), max_truncal_cn=6, max_branch_events=3)
     pure_gain_routes = enumerator.enumerate(
         (4, 2),
         (3, 1),
-        max_mrca_cn=6,
+        max_truncal_cn=6,
         max_branch_events=3,
         route_type=RouteType.PURE_GAIN,
     )
     mixed_gain_loss_routes = enumerator.enumerate(
         (4, 2),
         (3, 1),
-        max_mrca_cn=6,
+        max_truncal_cn=6,
         max_branch_events=3,
         route_type=RouteType.MIXED_GAIN_LOSS,
     )
@@ -50,14 +50,14 @@ def test_updated_mixed_gain_loss_counts_for_4_2_vs_3_1_thresholds():
         pure_gain_routes = enumerator.enumerate(
             (4, 2),
             (3, 1),
-            max_mrca_cn=6,
+            max_truncal_cn=6,
             max_branch_events=threshold,
             route_type=RouteType.PURE_GAIN,
         )
         mixed_gain_loss_routes = enumerator.enumerate(
             (4, 2),
             (3, 1),
-            max_mrca_cn=6,
+            max_truncal_cn=6,
             max_branch_events=threshold,
             route_type=RouteType.MIXED_GAIN_LOSS,
         )

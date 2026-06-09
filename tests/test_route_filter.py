@@ -6,7 +6,7 @@ from spur_codex.route_filter import collect_h_by_truncal, filter_routes, group_b
 
 
 def test_split_routes_matches_route_type_filters():
-    routes = RouteEnumerator().enumerate((4, 2), (3, 1), max_mrca_cn=6, max_branch_events=3)
+    routes = RouteEnumerator().enumerate((4, 2), (3, 1), max_truncal_cn=6, max_branch_events=3)
     split = split_routes(routes)
 
     assert split.pure_gain == filter_routes(routes, RouteType.PURE_GAIN)
@@ -15,7 +15,7 @@ def test_split_routes_matches_route_type_filters():
 
 
 def test_group_by_truncal_uses_canonical_key():
-    routes = RouteEnumerator().enumerate((3, 1), (3, 1), max_mrca_cn=4, max_branch_events=2)
+    routes = RouteEnumerator().enumerate((3, 1), (3, 1), max_truncal_cn=4, max_branch_events=2)
     groups = group_by_truncal(routes)
 
     assert len(groups) > 1
@@ -29,7 +29,7 @@ def test_group_by_truncal_uses_canonical_key():
 
 
 def test_route_h_matches_group_h_tensor_slice():
-    routes = RouteEnumerator().enumerate((3, 1), (3, 1), max_mrca_cn=4, max_branch_events=2)
+    routes = RouteEnumerator().enumerate((3, 1), (3, 1), max_truncal_cn=4, max_branch_events=2)
     group = group_by_truncal(routes)[0]
 
     H = group.h_tensor()
@@ -39,7 +39,7 @@ def test_route_h_matches_group_h_tensor_slice():
 
 
 def test_collect_h_by_truncal_returns_one_tensor_per_group():
-    routes = RouteEnumerator().enumerate((3, 1), (3, 1), max_mrca_cn=4, max_branch_events=2)
+    routes = RouteEnumerator().enumerate((3, 1), (3, 1), max_truncal_cn=4, max_branch_events=2)
     groups = group_by_truncal(routes)
     by_key = collect_h_by_truncal(routes)
 

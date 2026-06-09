@@ -9,14 +9,14 @@ def test_route_score_result_score_features_uses_mixed_gain_loss_names():
     pure_gain_routes = RouteEnumerator().enumerate(
         (3, 1),
         (3, 1),
-        max_mrca_cn=3,
+        max_truncal_cn=3,
         max_branch_events=2,
         route_type=RouteType.PURE_GAIN,
     )
     mixed_gain_loss_routes = RouteEnumerator().enumerate(
         (3, 1),
         (3, 1),
-        max_mrca_cn=3,
+        max_truncal_cn=3,
         max_branch_events=2,
         route_type=RouteType.MIXED_GAIN_LOSS,
     )[:3]
@@ -38,7 +38,7 @@ def test_route_score_result_route_score_table_uses_route_keys():
     routes = RouteEnumerator().enumerate(
         (3, 1),
         (3, 1),
-        max_mrca_cn=3,
+        max_truncal_cn=3,
         max_branch_events=2,
         route_type=RouteType.PURE_GAIN,
     )

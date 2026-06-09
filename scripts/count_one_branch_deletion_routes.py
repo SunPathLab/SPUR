@@ -12,7 +12,7 @@ from spur_codex.route_filter import split_routes
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--cn-tsv", default="/home/yunong-xia/Downloads/May_27_real_data_indices.tsv")
-    parser.add_argument("--max-mrca-cn", type=int, default=None)
+    parser.add_argument("--max-truncal-cn", "--max-mrca-cn", dest="max_truncal_cn", type=int, default=None)
     parser.add_argument("--max-branch-events", type=int, default=5)
     parser.add_argument("--out", default="route_comparison/real_data_cn_pairs_one_branch_deletion_counts.tsv")
     args = parser.parse_args()
@@ -21,11 +21,11 @@ def main() -> None:
     enumerator = RouteEnumerator()
     rows = []
     for sample1_cn, sample2_cn in pairs:
-        max_mrca_cn = args.max_mrca_cn or pair_max_mrca_cn(sample1_cn, sample2_cn)
+        max_truncal_cn = args.max_truncal_cn or pair_max_truncal_cn(sample1_cn, sample2_cn)
         routes = enumerator.enumerate(
             sample1_cn=sample1_cn,
             sample2_cn=sample2_cn,
-            max_mrca_cn=max_mrca_cn,
+            max_truncal_cn=max_truncal_cn,
             max_branch_events=args.max_branch_events,
         )
         split = split_routes(routes)
@@ -51,7 +51,7 @@ def main() -> None:
                 "sample1_minor_cn": sample1_cn[1],
                 "sample2_total_cn": sample2_cn[0],
                 "sample2_minor_cn": sample2_cn[1],
-                "max_mrca_cn": max_mrca_cn,
+                "max_truncal_cn": max_truncal_cn,
                 "max_branch_events": args.max_branch_events,
                 "all_routes": len(routes),
                 "pure_gain_routes": len(split.pure_gain),
@@ -88,7 +88,7 @@ def observed_cn_pairs_from_tsv(path: Path) -> list[tuple[tuple[int, int], tuple[
     return sorted(pairs, key=lambda pair: (pair[0][0], pair[0][1], pair[1][0], pair[1][1]))
 
 
-def pair_max_mrca_cn(sample1_cn: tuple[int, int], sample2_cn: tuple[int, int]) -> int:
+def pair_max_truncal_cn(sample1_cn: tuple[int, int], sample2_cn: tuple[int, int]) -> int:
     return min(max(sample1_cn[0], sample2_cn[0]) + 2, 6)
 
 

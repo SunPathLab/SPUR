@@ -114,14 +114,14 @@ Route
     branch2
 ```
 
-A `Branch.copy_fate_vector` records, for each MRCA copy, how many descendant copies remain in the final sample.
+A `Branch.copy_fate_vector` records, for each truncal copy, how many descendant copies remain in the final sample.
 
 Examples:
 
 ```text
-(1, 1, 1) = all MRCA copies retained
-(2, 1, 1) = first MRCA copy gained
-(0, 2, 1) = first MRCA copy deleted, second gained
+(1, 1, 1) = all truncal copies retained
+(2, 1, 1) = first truncal copy gained
+(0, 2, 1) = first truncal copy deleted, second gained
 ```
 
 ## Route Definitions
@@ -147,7 +147,7 @@ Enumerators:
 
 ```text
 TruncalEnumerator
-    Enumerates MRCA states and gain-history trees.
+    Enumerates truncal states and gain-history trees.
 
 BranchEnumerator
     Enumerates copy-fate vectors for one sample under an event cap.
@@ -169,12 +169,16 @@ src/spur_codex/route_filter.py
 The intended workflow is:
 
 ```python
-all_routes = RouteEnumerator().enumerate(sample1_cn, sample2_cn, max_mrca_cn, max_branch_events)
+all_routes = RouteEnumerator().enumerate(sample1_cn, sample2_cn, max_truncal_cn, max_branch_events)
 split = split_routes(all_routes)
 groups = group_by_truncal(split.mixed_gain_loss)
 ```
 
 This keeps enumeration broad and moves route selection into a separate module.
+Use `max_truncal_cn` for the shared pre-branch copy-number cap. The command-line
+interface still accepts `--max-mrca-cn` as a legacy alias, but current docs,
+metadata, and output tables use truncal naming.
+
 Each `Truncal` has a canonical key that uses the readable branching shape
 instead of the NetworkX hash:
 
@@ -457,8 +461,8 @@ sample1_total_cn
 sample1_minor_cn
 sample2_total_cn
 sample2_minor_cn
-mrca_total_cn
-mrca_minor_cn
+truncal_total_cn
+truncal_minor_cn
 truncal_key
 branch1_index
 branch2_index

@@ -38,9 +38,9 @@ class TruncalEnumerator:
                 )
         return truncals
 
-    def enumerate_up_to(self, max_mrca_cn: int) -> List[Truncal]:
+    def enumerate_up_to(self, max_truncal_cn: int) -> List[Truncal]:
         truncals: List[Truncal] = []
-        for total_cn in range(2, max_mrca_cn + 1):
+        for total_cn in range(2, max_truncal_cn + 1):
             for minor_cn in range(1, total_cn // 2 + 1):
                 truncals.extend(self.enumerate_for_state(total_cn, minor_cn))
         return truncals
@@ -74,15 +74,15 @@ class BranchEnumerator:
         return branches
 
     @staticmethod
-    def _allele_vectors(n_mrca_copies: int, target_cn: int) -> List[Tuple[int, ...]]:
-        if n_mrca_copies <= 0:
+    def _allele_vectors(n_truncal_copies: int, target_cn: int) -> List[Tuple[int, ...]]:
+        if n_truncal_copies <= 0:
             return []
         if target_cn == 0:
-            return [tuple(0 for _ in range(n_mrca_copies))]
+            return [tuple(0 for _ in range(n_truncal_copies))]
 
         vectors: List[Tuple[int, ...]] = []
-        for selected in combinations_with_replacement(range(n_mrca_copies), target_cn):
-            counts = [0] * n_mrca_copies
+        for selected in combinations_with_replacement(range(n_truncal_copies), target_cn):
+            counts = [0] * n_truncal_copies
             for idx in selected:
                 counts[idx] += 1
             vectors.append(tuple(counts))
@@ -117,12 +117,18 @@ class RouteEnumerator:
         self,
         sample1_cn: tuple[int, int],
         sample2_cn: tuple[int, int],
-        max_mrca_cn: int,
-        max_branch_events: int,
+        max_truncal_cn: int | None = None,
+        max_branch_events: int = 5,
         route_type: RouteType = RouteType.ALL,
+        *,
+        max_mrca_cn: int | None = None,
     ) -> List[Route]:
+        if max_truncal_cn is None:
+            if max_mrca_cn is None:
+                raise TypeError("max_truncal_cn is required.")
+            max_truncal_cn = max_mrca_cn
         routes: List[Route] = []
-        for truncal in self.truncal_enumerator.enumerate_up_to(max_mrca_cn):
+        for truncal in self.truncal_enumerator.enumerate_up_to(max_truncal_cn):
             routes.extend(
                 self.enumerate_for_truncal(
                     truncal=truncal,

@@ -52,6 +52,12 @@ test runner is included:
 PYTHONPATH=src python tests/run_tests.py
 ```
 
+## CLI Naming
+
+Use `--max-truncal-cn` for the shared pre-branch copy-number cap. The older
+`--max-mrca-cn` option is still accepted as a backward-compatible alias, but new
+commands and output tables should use truncal naming.
+
 ## Small Simulation
 
 Generate lightweight simulated route/JMD examples from the real-data CN-pair

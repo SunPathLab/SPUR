@@ -23,7 +23,7 @@ def main() -> None:
     parser.add_argument("--n-cn-pairs", type=int, default=3)
     parser.add_argument("--n-per-class", type=int, default=20)
     parser.add_argument("--max-total-cn", type=int, default=5)
-    parser.add_argument("--max-mrca-cn", type=int, default=6)
+    parser.add_argument("--max-truncal-cn", "--max-mrca-cn", dest="max_truncal_cn", type=int, default=6)
     parser.add_argument("--max-branch-events", type=int, default=5)
     parser.add_argument("--seed", type=int, default=20260604)
     args = parser.parse_args()
@@ -33,12 +33,12 @@ def main() -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     cn_pairs = select_cn_pairs(Path(args.cn_tsv), args.n_cn_pairs, args.max_total_cn)
-    checker = PureGainCompatibilityChecker(args.max_mrca_cn, args.max_branch_events)
+    checker = PureGainCompatibilityChecker(args.max_truncal_cn, args.max_branch_events)
     enumerator = RouteEnumerator()
 
     rows = []
     for pair_index, (sample1_cn, sample2_cn) in enumerate(cn_pairs):
-        all_routes = enumerator.enumerate(sample1_cn, sample2_cn, args.max_mrca_cn, args.max_branch_events)
+        all_routes = enumerator.enumerate(sample1_cn, sample2_cn, args.max_truncal_cn, args.max_branch_events)
         split = split_routes(all_routes)
         routes_by_class = {
             "pure_gain": list(split.pure_gain),
@@ -142,8 +142,8 @@ def simulate_class(
                 "sample1_minor_cn": sample1_cn[1],
                 "sample2_total_cn": sample2_cn[0],
                 "sample2_minor_cn": sample2_cn[1],
-                "mrca_total_cn": route.truncal.truncal_total_cn,
-                "mrca_minor_cn": route.truncal.truncal_minor_cn,
+                "truncal_total_cn": route.truncal.truncal_total_cn,
+                "truncal_minor_cn": route.truncal.truncal_minor_cn,
                 "truncal_key": route.truncal_key,
                 "branch1_index": route.branch1.branch_index,
                 "branch2_index": route.branch2.branch_index,

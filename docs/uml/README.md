@@ -116,11 +116,11 @@ classDiagram
 
 ```mermaid
 flowchart TD
-    input["CN pair input<br/>sample1_cn<br/>sample2_cn<br/>max_mrca_cn<br/>max_branch_events<br/>route_type"] --> routeEnum["RouteEnumerator.enumerate"]
+    input["CN pair input<br/>sample1_cn<br/>sample2_cn<br/>max_truncal_cn<br/>max_branch_events<br/>route_type"] --> routeEnum["RouteEnumerator.enumerate"]
 
-    routeEnum --> truncUpTo["TruncalEnumerator.enumerate_up_to(max_mrca_cn)"]
+    routeEnum --> truncUpTo["TruncalEnumerator.enumerate_up_to(max_truncal_cn)"]
     truncUpTo --> truncState["enumerate_for_state(major_cn, minor_cn)"]
-    truncState --> treeGen["all_full_binary_trees<br/>assign_node_ids<br/>union_tree_hash"]
+    truncState --> treeGen["all_full_binary_trees<br/>assign_node_ids<br/>union_tree_shape"]
     treeGen --> truncals["List[Truncal]"]
 
     truncals --> perTruncal["RouteEnumerator.enumerate_for_truncal"]

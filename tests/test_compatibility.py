@@ -13,14 +13,14 @@ def test_pure_gain_route_jmd_is_pure_gain_compatible():
     route = RouteEnumerator().enumerate(
         sample1_cn,
         sample2_cn,
-        max_mrca_cn=4,
+        max_truncal_cn=4,
         max_branch_events=3,
         route_type=RouteType.PURE_GAIN,
     )[0]
 
     _, q = sample_route_jmd(route, sample1_cn, sample2_cn, rng)
 
-    checker = PureGainCompatibilityChecker(max_mrca_cn=4, max_branch_events=3)
+    checker = PureGainCompatibilityChecker(max_truncal_cn=4, max_branch_events=3)
     assert checker.is_compatible(q, sample1_cn, sample2_cn)
 
 
@@ -31,11 +31,11 @@ def test_some_mixed_gain_loss_jmd_is_conclusive():
     routes = RouteEnumerator().enumerate(
         sample1_cn,
         sample2_cn,
-        max_mrca_cn=6,
+        max_truncal_cn=6,
         max_branch_events=4,
         route_type=RouteType.MIXED_GAIN_LOSS,
     )
-    checker = PureGainCompatibilityChecker(max_mrca_cn=6, max_branch_events=4)
+    checker = PureGainCompatibilityChecker(max_truncal_cn=6, max_branch_events=4)
 
     found_conclusive = False
     for route in routes[:200]:

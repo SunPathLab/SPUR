@@ -37,7 +37,7 @@ def test_route_encoder_builds_paired_route_tensor_for_one_truncal():
 
 
 def test_route_encoder_rejects_mixed_truncals():
-    routes = RouteEnumerator().enumerate((3, 1), (3, 1), max_mrca_cn=4, max_branch_events=2)
+    routes = RouteEnumerator().enumerate((3, 1), (3, 1), max_truncal_cn=4, max_branch_events=2)
     truncal_keys = {route.truncal_key for route in routes}
     assert len(truncal_keys) > 1
 

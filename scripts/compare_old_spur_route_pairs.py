@@ -17,7 +17,7 @@ def main() -> None:
     parser.add_argument("--old-spur-src", default="../SPUR/src/spur")
     parser.add_argument("--cn-tsv", default="/home/yunong-xia/Downloads/May_27_real_data_indices.tsv")
     parser.add_argument("--max-total-cn", type=int, default=None)
-    parser.add_argument("--max-mrca-cn", type=int, default=None)
+    parser.add_argument("--max-truncal-cn", "--max-mrca-cn", dest="max_truncal_cn", type=int, default=None)
     parser.add_argument("--max-branch-events", type=int, default=5)
     parser.add_argument("--out", default="route_comparison/real_data_cn_pairs_old_spur_vs_codex_summary.tsv")
     args = parser.parse_args()
@@ -25,18 +25,18 @@ def main() -> None:
     pairs = observed_cn_pairs_from_tsv(Path(args.cn_tsv), args.max_total_cn)
     rows = []
     for sample1_cn, sample2_cn in pairs:
-        max_mrca_cn = args.max_mrca_cn or pair_max_mrca_cn(sample1_cn, sample2_cn)
+        max_truncal_cn = args.max_truncal_cn or pair_max_truncal_cn(sample1_cn, sample2_cn)
         old_records = old_spur_complex_records(
             old_spur_src=Path(args.old_spur_src),
             sample1_cn=sample1_cn,
             sample2_cn=sample2_cn,
-            max_mrca_cn=max_mrca_cn,
+            max_truncal_cn=max_truncal_cn,
             max_branch_events=args.max_branch_events,
         )
         codex_records = codex_both_deletion_records(
             sample1_cn=sample1_cn,
             sample2_cn=sample2_cn,
-            max_mrca_cn=max_mrca_cn,
+            max_truncal_cn=max_truncal_cn,
             max_branch_events=args.max_branch_events,
         )
         old_routes = canonical_tree_multiset(old_records)
@@ -60,7 +60,7 @@ def main() -> None:
                 "sample2_total_cn": sample2_cn[0],
                 "sample2_minor_cn": sample2_cn[1],
                 "cn_tsv": args.cn_tsv,
-                "max_mrca_cn": max_mrca_cn,
+                "max_truncal_cn": max_truncal_cn,
                 "max_branch_events": args.max_branch_events,
                 "old_spur_complex_routes": len(old_records),
                 "spur_codex_both_deletion_routes": len(codex_records),
@@ -111,7 +111,7 @@ def synthetic_observed_cn_pairs(max_total_cn: int) -> list[tuple[tuple[int, int]
     return pairs
 
 
-def pair_max_mrca_cn(sample1_cn: tuple[int, int], sample2_cn: tuple[int, int]) -> int:
+def pair_max_truncal_cn(sample1_cn: tuple[int, int], sample2_cn: tuple[int, int]) -> int:
     return min(max(sample1_cn[0], sample2_cn[0]) + 2, 6)
 
 
