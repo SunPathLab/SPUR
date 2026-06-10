@@ -12,9 +12,9 @@ def test_main_runs_example_reads_csv_and_writes_feature_tsv():
         reads_csv = tmp_path / "example_reads.csv"
         output_dir = tmp_path / "scores"
         reads_csv.write_text(
-            "alt1,dep1,alt2,dep2\n"
-            "2,10,2,10\n"
-            "3,10,4,10\n"
+            "alt1,ref1,alt2,ref2\n"
+            "5,20,6,20\n"
+            "7,20,8,20\n"
         )
 
         old_argv = sys.argv
@@ -68,9 +68,9 @@ def test_main_runs_multiple_seeds_in_single_program_run():
         seed_file = tmp_path / "seeds.txt"
         output_dir = tmp_path / "scores"
         reads_csv.write_text(
-            "alt1,dep1,alt2,dep2\n"
-            "2,10,2,10\n"
-            "3,10,4,10\n"
+            "alt1,ref1,alt2,ref2\n"
+            "5,20,6,20\n"
+            "7,20,8,20\n"
         )
         seed_file.write_text("1\n2\n")
 
@@ -121,3 +121,68 @@ def test_main_runs_multiple_seeds_in_single_program_run():
         assert route_score_rows
         assert "score_seed_1" in route_score_rows[0]
         assert "score_seed_2" in route_score_rows[0]
+
+
+def test_main_runs_batch_reads_file_list_and_writes_one_output_per_input():
+    with TemporaryDirectory() as tmpdir:
+        tmp_path = Path(tmpdir)
+        reads_csv_1 = tmp_path / "example_reads_1.csv"
+        reads_csv_2 = tmp_path / "example_reads_2.csv"
+        filepath_list = tmp_path / "inputs.txt"
+        output_dir = tmp_path / "scores"
+        reads_csv_1.write_text(
+            "alt1,ref1,alt2,ref2\n"
+            "5,20,6,20\n"
+            "7,20,8,20\n"
+        )
+        reads_csv_2.write_text(
+            "alt1,ref1,alt2,ref2\n"
+            "6,20,5,20\n"
+            "8,20,7,20\n"
+        )
+        filepath_list.write_text(f"{reads_csv_1}\n{reads_csv_2}\n")
+
+        old_argv = sys.argv
+        sys.argv = [
+            "spur-codex",
+            "--batch-process",
+            "--batch-filepath-list",
+            str(filepath_list),
+            "--output_dir",
+            str(output_dir),
+            "--cn-pair",
+            "3:1_3:1",
+            "--max-truncal-cn",
+            "3",
+            "--max-branch-events",
+            "2",
+            "--n_Monte_Carlo_samples",
+            "4",
+            "--burn-in",
+            "2",
+            "--skips",
+            "1",
+            "--seed",
+            "1",
+            "--sample1_purity",
+            "0.8",
+            "--sample2_purity",
+            "0.8",
+        ]
+        try:
+            assert main() == 0
+        finally:
+            sys.argv = old_argv
+
+        output_tsv_1 = output_dir / "example_reads_1.tsv"
+        output_tsv_2 = output_dir / "example_reads_2.tsv"
+        assert output_tsv_1.exists()
+        assert output_tsv_2.exists()
+
+        with output_tsv_1.open() as f:
+            rows_1 = list(csv.DictReader(f, delimiter="\t"))
+        with output_tsv_2.open() as f:
+            rows_2 = list(csv.DictReader(f, delimiter="\t"))
+
+        assert rows_1[0]["input_path"] == str(reads_csv_1)
+        assert rows_2[0]["input_path"] == str(reads_csv_2)

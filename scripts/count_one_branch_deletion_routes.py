@@ -12,7 +12,7 @@ from spur_codex.route_filter import split_routes
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--cn-tsv", default="/home/yunong-xia/Downloads/May_27_real_data_indices.tsv")
-    parser.add_argument("--max-truncal-cn", "--max-mrca-cn", dest="max_truncal_cn", type=int, default=None)
+    parser.add_argument("--max-truncal-cn", type=int, default=None)
     parser.add_argument("--max-branch-events", type=int, default=5)
     parser.add_argument("--out", default="route_comparison/real_data_cn_pairs_one_branch_deletion_counts.tsv")
     args = parser.parse_args()

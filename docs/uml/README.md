@@ -129,15 +129,28 @@ flowchart TD
 
     branch1 --> allele1["_allele_vectors<br/>major + minor"]
     branch2 --> allele2["_allele_vectors<br/>major + minor"]
-    allele1 --> branches1["sample 1 Branch list<br/>filtered by n_events"]
-    allele2 --> branches2["sample 2 Branch list<br/>filtered by n_events"]
+    allele1 --> branchCap1["enumeration cap<br/>branch1.n_events <= max_branch_events"]
+    allele2 --> branchCap2["enumeration cap<br/>branch2.n_events <= max_branch_events"]
+    branchCap1 --> branches1["sample 1 Branch list"]
+    branchCap2 --> branches2["sample 2 Branch list"]
 
     branches1 --> product["paired branch cross product"]
     branches2 --> product
     truncals --> product
     product --> route["Route(truncal, branch1, branch2)"]
-    route --> filter["Route.matches_type(route_type)"]
-    filter --> routes["List[Route]"]
+    route --> typeFilter["Route.matches_type(route_type)"]
+    typeFilter --> routes["List[Route]"]
+    routes --> postFilter{"optional post-enumeration<br/>route_filter"}
+    postFilter --> noFilter["none"]
+    postFilter --> total["total_events <= threshold"]
+    postFilter --> maxBranch["max(branch1, branch2) events <= threshold"]
+    postFilter --> branchSum["branch1 + branch2 events <= threshold"]
+    postFilter --> singleSample["max(truncal + branch events) <= threshold"]
+    noFilter --> finalRoutes["filtered Route set"]
+    total --> finalRoutes
+    maxBranch --> finalRoutes
+    branchSum --> finalRoutes
+    singleSample --> finalRoutes
 ```
 
 ## Encoding, Scoring, And Compatibility
@@ -179,36 +192,42 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    cnTsv["CN-pair TSV<br/>May_27_real_data_indices.tsv"] --> script["scripts/simulate_small_datasets.py"]
-    script --> canonical["canonicalize CN pairs"]
-    canonical --> select["select small CN pairs"]
+    input["CN-pair input<br/>--cn-pair total:minor_total:minor"] --> script["scripts/simulate_datasets.py"]
+    script --> parse["parse_between_sample_cn"]
+    parse --> truncalCap["resolve max_truncal_cn<br/>min(max total CN + 2, 6) unless provided"]
 
-    select --> classes["simulation classes<br/>pure_gain<br/>mixed_gain_loss<br/>conclusive_mixed_gain_loss"]
-    classes --> routeEnum["RouteEnumerator.enumerate"]
-    routeEnum --> routePool["candidate route pool"]
+    truncalCap --> routeEnum["RouteEnumerator.enumerate"]
+    routeEnum --> routeType["split by route type<br/>pure_gain or mixed_gain_loss"]
+    routeType --> routeFilter{"optional route_filter"}
+    routeFilter --> routePool["filtered route pool"]
 
-    routePool --> routePick["sample/select Route"]
-    routePick --> sampleRoute["sample_route_jmd"]
+    routePool --> perRoute["for each Route"]
 
     subgraph Timing["Timing sampling"]
-        sampleRoute --> sampleTiming["sample_timing(route.truncal, rng)"]
-        sampleTiming --> constraints["constraint_matrix"]
-        constraints --> feasible["_feasible_timing via linprog"]
-        feasible --> randomWalk["null-space random walk<br/>nonnegative timing vector"]
+        perRoute --> sampleTiming["TimingSampler.sample_timing_vectors"]
+        sampleTiming --> constraints["route.truncal.constraint_matrix"]
+        constraints --> feasible["_feasible_timing via NNLS"]
+        feasible --> hitAndRun["hit_and_run<br/>nonnegative timing vectors T"]
     end
 
     subgraph JMD["Ground-truth JMD"]
-        randomWalk --> routeJmd["route_jmd"]
-        routePick --> routeJmd
-        routeJmd --> encoder["RouteEncoder.timing_contribution_tensor"]
-        encoder --> q["normalized JMD q"]
+        perRoute --> h["route.h(dtype)"]
+        hitAndRun --> th["Q = T @ H"]
+        h --> th
+        th --> q["normalized JMD rows"]
     end
 
-    q --> compat{"class requires<br/>pure-gain incompatibility?"}
+    q --> compat{"route_type is<br/>conclusive_mixed_gain_loss?"}
     compat --> checker["PureGainCompatibilityChecker.is_compatible"]
-    checker --> keepOrReject["keep/reject example"]
+    checker --> keepOrReject["drop pure-gain-compatible Q rows"]
     compat --> keepOrReject
+    keepOrReject --> densityFilter["density threshold filter"]
+    densityFilter --> sampleQ["sample Q rows"]
+    sampleQ --> vaf["JointVAFSampler.sample_joint_vafs"]
+    vaf --> reads["generate_total_reads<br/>generate_alt_reads"]
 
-    keepOrReject --> npz["*.npz<br/>jmd<br/>timing<br/>branch copy-fate vectors"]
-    keepOrReject --> metadata["metadata.tsv<br/>class label<br/>CN pair<br/>tree hash<br/>branch indices<br/>events<br/>compatibility"]
+    reads --> csv["read-count CSV files"]
+    sampleQ --> truth["ground-truth density"]
+    vaf --> truthVaf["ground-truth expected VAFs"]
+    script --> metadata["metadata.json"]
 ```

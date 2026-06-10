@@ -158,6 +158,37 @@ RouteEnumerator
 
 For CN pairs, the simulation script canonicalizes `(sample1_cn, sample2_cn)` so reversed pairs are treated consistently. Displayed CN labels use `total:minor`, so if present, `3:1 vs 4:2` and `4:2 vs 3:1` are both represented as `4:2 vs 3:1`.
 
+### Enumeration Cap Versus Route Filters
+
+There are two separate route-selection concepts:
+
+```text
+max_branch_events
+    Enumeration-time cap. BranchEnumerator applies this to each single-sample
+    branch before branch1 and branch2 are paired into full Route objects.
+
+route_filter / route_filter_threshold
+    Post-enumeration filter. route_filter.py applies this to completed Route
+    objects after truncal, branch1, and branch2 have already been combined.
+```
+
+This distinction matters. A branch cap of `5` means:
+
+```text
+branch1.n_events <= 5
+branch2.n_events <= 5
+```
+
+A route filter such as `total_events <= 8` means:
+
+```text
+route.truncal.n_events + branch1.n_events + branch2.n_events <= 8
+```
+
+These are not equivalent. The branch cap is mainly computational and mirrors
+old SPUR's `max_n_post_mrca_events` behavior. The route filter is the cleaner
+biological/simulation-facing rule because it is evaluated on the final route.
+
 ## Route Filter Layer
 
 Implemented in:
@@ -176,8 +207,20 @@ groups = group_by_truncal(split.mixed_gain_loss)
 
 This keeps enumeration broad and moves route selection into a separate module.
 Use `max_truncal_cn` for the shared pre-branch copy-number cap. The command-line
-interface still accepts `--max-mrca-cn` as a legacy alias, but current docs,
-metadata, and output tables use truncal naming.
+interface, metadata, and output tables use truncal naming consistently.
+
+Current CLI scoring flow in `src/spur_codex/main.py`:
+
+```text
+parse --cn-pair
+resolve max_truncal_cn = min(max(sample total CN) + 2, 6) unless provided
+RouteEnumerator.enumerate(..., max_branch_events=args.max_branch_events)
+apply route_filter if --route-filter is not "none"
+score the remaining routes with Scorer.score(...)
+```
+
+So `main.py` currently still uses an enumeration-time branch cap first, then an
+optional completed-route filter.
 
 Each `Truncal` has a canonical key that uses the readable branching shape
 instead of the NetworkX hash:
@@ -343,6 +386,7 @@ src/spur_codex/hit_and_run.py
 src/spur_codex/sampling.py
 src/spur_codex/simulation.py
 scripts/simulate_small_datasets.py
+scripts/simulate_datasets.py
 ```
 
 Current timing sampling uses old-SPUR-style hit-and-run. The copied
@@ -399,6 +443,31 @@ mixed_gain_loss
 conclusive_mixed_gain_loss
     Mixed-gain-loss route whose sampled ground-truth JMD is not pure-gain compatible.
 ```
+
+The new read-count simulation script, `scripts/simulate_datasets.py`, follows
+the same high-level route-selection order:
+
+```text
+parse --cn-pair in total:minor notation
+resolve max_truncal_cn = min(max(sample total CN) + 2, 6) unless provided
+enumerate routes for the CN pair
+split routes by route type:
+    pure_gain
+    mixed_gain_loss
+    conclusive_mixed_gain_loss starts from mixed_gain_loss
+apply route_filter if requested
+sample timing vectors T for each remaining route
+compute Q = T @ H
+optionally remove Q profiles compatible with pure gain
+sample expected joint VAFs
+generate read-count CSV files and ground-truth metadata
+```
+
+Design note: if the script is intended to match old SPUR exactly, route
+enumeration should keep the old branch-level cap (`max_n_post_mrca_events`,
+currently equivalent to `max_branch_events`). If the script is intended to use
+the newer route-object design, it can enumerate broadly within `max_truncal_cn`
+and then apply explicit route-level filters from `route_filter.py`.
 
 Default command:
 

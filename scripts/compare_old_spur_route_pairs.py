@@ -17,7 +17,7 @@ def main() -> None:
     parser.add_argument("--old-spur-src", default="../SPUR/src/spur")
     parser.add_argument("--cn-tsv", default="/home/yunong-xia/Downloads/May_27_real_data_indices.tsv")
     parser.add_argument("--max-total-cn", type=int, default=None)
-    parser.add_argument("--max-truncal-cn", "--max-mrca-cn", dest="max_truncal_cn", type=int, default=None)
+    parser.add_argument("--max-truncal-cn", type=int, default=None)
     parser.add_argument("--max-branch-events", type=int, default=5)
     parser.add_argument("--out", default="route_comparison/real_data_cn_pairs_old_spur_vs_codex_summary.tsv")
     args = parser.parse_args()

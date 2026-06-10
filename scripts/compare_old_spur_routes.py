@@ -43,7 +43,7 @@ def main() -> None:
     parser.add_argument("--sample1-minor-cn", type=int, default=2)
     parser.add_argument("--sample2-total-cn", type=int, default=3)
     parser.add_argument("--sample2-minor-cn", type=int, default=1)
-    parser.add_argument("--max-truncal-cn", "--max-mrca-cn", dest="max_truncal_cn", type=int, default=6)
+    parser.add_argument("--max-truncal-cn", type=int, default=6)
     parser.add_argument("--max-branch-events", type=int, default=5)
     parser.add_argument("--out", default="route_comparison/4_2_vs_3_1_old_spur_vs_codex.tsv")
     parser.add_argument("--fate-out", default="route_comparison/4_2_vs_3_1_old_spur_vs_codex_fate_vectors.tsv")
@@ -170,9 +170,9 @@ def old_spur_complex_records(
     records = []
     for major_cn, minor_cn in truncal_states(max_truncal_cn):
         total_cn = major_cn + minor_cn
-        for tree_index, mrca in enumerate(MRCARouteTreeCollection(major_cn, minor_cn).all_route_tree_collection):
-            branch1 = mrca.get_complex_routes_multiplication_vector(sample1_major_minor[0], sample1_major_minor[1], max_branch_events)
-            branch2 = mrca.get_complex_routes_multiplication_vector(sample2_major_minor[0], sample2_major_minor[1], max_branch_events)
+        for tree_index, old_tree in enumerate(MRCARouteTreeCollection(major_cn, minor_cn).all_route_tree_collection):
+            branch1 = old_tree.get_complex_routes_multiplication_vector(sample1_major_minor[0], sample1_major_minor[1], max_branch_events)
+            branch2 = old_tree.get_complex_routes_multiplication_vector(sample2_major_minor[0], sample2_major_minor[1], max_branch_events)
             if branch1.shape[0] == 0 or branch2.shape[0] == 0:
                 continue
             for i, fate1 in enumerate(branch1):
@@ -182,7 +182,7 @@ def old_spur_complex_records(
                             source="old_spur",
                             truncal_total_cn=total_cn,
                             truncal_minor_cn=minor_cn,
-                            canonical_tree=f"truncal_{total_cn}:{minor_cn}_{union_tree_shape(mrca.major_tree, mrca.minor_tree)}",
+                            canonical_tree=f"truncal_{total_cn}:{minor_cn}_{union_tree_shape(old_tree.major_tree, old_tree.minor_tree)}",
                             branch1_fate=array_to_tuple(fate1),
                             branch2_fate=array_to_tuple(fate2),
                             branch1_index=i,

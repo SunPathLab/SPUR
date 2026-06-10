@@ -16,6 +16,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--sample1_prevalence", type=float, default=1)
     parser.add_argument("--sample2_prevalence", type=float, default=1)
     
+    # batch input
+    parser.add_argument(
+        "--batch-process",
+        action="store_true",
+        help="Run in batch-processing mode.",
+    )
+    parser.add_argument("--batch-filepath-list", type=str, help="A file where each row is a read count filepath")
+    
     # data process
     parser.add_argument("--alt-reads-threshold", type=int, default=3)
     parser.add_argument("--total-reads-threshold", type=int, default=15)
@@ -23,8 +31,6 @@ def build_parser() -> argparse.ArgumentParser:
     # Route options
     parser.add_argument(
         "--max-truncal-cn",
-        "--max-mrca-cn",
-        dest="max_truncal_cn",
         type=int,
         default=None,
         help="Defaults to min(max(total CN) + 2, 6).",
@@ -70,6 +76,7 @@ def build_parser() -> argparse.ArgumentParser:
         type=str,
         help="Path of the file containing seeds when calculate-uncertainty is turning on.",
     )
+    
     
         
     #output

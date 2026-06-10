@@ -120,13 +120,9 @@ class RouteEnumerator:
         max_truncal_cn: int | None = None,
         max_branch_events: int = 5,
         route_type: RouteType = RouteType.ALL,
-        *,
-        max_mrca_cn: int | None = None,
     ) -> List[Route]:
         if max_truncal_cn is None:
-            if max_mrca_cn is None:
-                raise TypeError("max_truncal_cn is required.")
-            max_truncal_cn = max_mrca_cn
+            raise TypeError("max_truncal_cn is required.")
         routes: List[Route] = []
         for truncal in self.truncal_enumerator.enumerate_up_to(max_truncal_cn):
             routes.extend(

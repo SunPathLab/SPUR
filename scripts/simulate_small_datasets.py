@@ -23,7 +23,7 @@ def main() -> None:
     parser.add_argument("--n-cn-pairs", type=int, default=3)
     parser.add_argument("--n-per-class", type=int, default=20)
     parser.add_argument("--max-total-cn", type=int, default=5)
-    parser.add_argument("--max-truncal-cn", "--max-mrca-cn", dest="max_truncal_cn", type=int, default=6)
+    parser.add_argument("--max-truncal-cn", type=int, default=6)
     parser.add_argument("--max-branch-events", type=int, default=5)
     parser.add_argument("--seed", type=int, default=20260604)
     args = parser.parse_args()
@@ -33,7 +33,11 @@ def main() -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     cn_pairs = select_cn_pairs(Path(args.cn_tsv), args.n_cn_pairs, args.max_total_cn)
-    checker = PureGainCompatibilityChecker(args.max_truncal_cn, args.max_branch_events)
+    checker = PureGainCompatibilityChecker(
+        max_truncal_cn=args.max_truncal_cn,
+        route_filter="max_branch_events",
+        route_filter_threshold=args.max_branch_events,
+    )
     enumerator = RouteEnumerator()
 
     rows = []

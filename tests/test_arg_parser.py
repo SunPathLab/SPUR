@@ -28,10 +28,3 @@ def test_build_parser_preserves_main_cli_options():
     assert args.max_truncal_cn == 6
     assert args.calculate_uncertainty is True
     assert args.seed_filepath == "seeds.txt"
-
-
-def test_build_parser_keeps_old_max_mrca_alias():
-    # Backward compatibility for commands written before the truncal rename.
-    args = build_parser().parse_args(["--max-mrca-cn", "5"])
-
-    assert args.max_truncal_cn == 5

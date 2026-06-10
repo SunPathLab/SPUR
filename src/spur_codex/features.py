@@ -17,10 +17,8 @@ class RouteScoreResult:
     
     def route_score_table(self, seed: int) -> dict[str, list[str] | np.ndarray]:
         return route_score_table(self, seed)
-        
-
-def score_features(route_score_result: RouteScoreResult) -> dict[str, float | int]:
     
+def score_features(route_score_result: RouteScoreResult) -> dict[str, float | int]:
     pure_gain_mask = np.array([route.is_pure_gain for route in route_score_result.routes])
     pure_gain_scores = route_score_result.scores[pure_gain_mask]
     mixed_gain_loss_scores = route_score_result.scores[~pure_gain_mask]

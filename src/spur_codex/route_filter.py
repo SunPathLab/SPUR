@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import Callable, Iterable, Sequence
+from typing import Callable, Iterable, Literal, Sequence
 
 import numpy as np
 
@@ -11,27 +11,59 @@ from .route import Route, RouteType
 
 
 RoutePredicate = Callable[[Route], bool]
+RouteFilterName = Literal[
+    "none",
+    "total_events",
+    "max_branch_events",
+    "total_branch_events",
+    "single_sample_total_events",
+]
 
 
 class RouteFilter:
     @staticmethod
     def filter_by_total_events(routes: tuple[Route, ...], threshold: int) -> tuple[Route, ...]:
-        return [route for route in routes if route.total_events <= threshold]
+        return tuple(route for route in routes if route.total_events <= threshold)
 
     @staticmethod
     def filter_by_max_branch_events(routes: tuple[Route, ...], threshold: int) -> tuple[Route, ...]:
-        return [route for route in routes if np.max((route.branch1.n_events, route.branch2.n_events)) <= threshold]
+        return tuple(route for route in routes if np.max((route.branch1.n_events, route.branch2.n_events)) <= threshold)
 
     @staticmethod
     def filter_by_total_branch_events(routes: tuple[Route, ...], threshold: int) -> tuple[Route, ...]:
-        return [route for route in routes if route.branch1.n_events + route.branch2.n_events <= threshold]
+        return tuple(route for route in routes if route.branch1.n_events + route.branch2.n_events <= threshold)
     
     @staticmethod
     def filter_by_single_sample_total_events(routes: tuple[Route, ...], threshold: int) -> tuple[Route, ...]:
-        return [route for route in routes if np.max((route.truncal.n_events + route.branch1.n_events,
-                                                     route.truncal.n_events + route.branch2.n_events)) <= threshold]
+        return tuple(route for route in routes if np.max((route.truncal.n_events + route.branch1.n_events,
+                                                          route.truncal.n_events + route.branch2.n_events)) <= threshold)
 
 
+
+
+def apply_route_filter(
+    routes: Iterable[Route],
+    route_filter: RouteFilterName = "none",
+    threshold: int | None = None,
+) -> tuple[Route, ...]:
+    routes = tuple(routes)
+    if route_filter == "none":
+        return routes
+    if threshold is None:
+        raise ValueError("--route-filter-threshold is required when --route-filter is not 'none'.")
+
+    route_filter_map = {
+        "total_events": RouteFilter.filter_by_total_events,
+        "max_branch_events": RouteFilter.filter_by_max_branch_events,
+        "total_branch_events": RouteFilter.filter_by_total_branch_events,
+        "single_sample_total_events": RouteFilter.filter_by_single_sample_total_events,
+    }
+
+    try:
+        filter_method = route_filter_map[route_filter]
+    except KeyError as exc:
+        raise ValueError(f"Unsupported route filter: {route_filter}") from exc
+    return filter_method(routes, threshold)
 
 
 @dataclass(frozen=True)
