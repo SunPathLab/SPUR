@@ -59,6 +59,30 @@ def load_input_records(args) -> list[dict[str, str | np.ndarray]]:
     return inputs
 
 
+def print_run_parameters(args, inputs, seeds, routes, max_truncal_cn) -> None:
+    print("SPUR Codex run parameters")
+    print(f"  cn_pair: {args.cn_pair}")
+    print(f"  sample1_purity: {args.sample1_purity}")
+    print(f"  sample2_purity: {args.sample2_purity}")
+    print(f"  sample1_prevalence: {args.sample1_prevalence}")
+    print(f"  sample2_prevalence: {args.sample2_prevalence}")
+    print(f"  max_truncal_cn: {max_truncal_cn}")
+    print(f"  max_branch_events: {args.max_branch_events}")
+    print(f"  route_filter: {args.route_filter}")
+    print(f"  route_filter_threshold: {args.route_filter_threshold}")
+    print(f"  n_routes_scored: {len(routes)}")
+    print(f"  n_inputs: {len(inputs)}")
+    print(f"  seeds: {','.join(map(str, seeds))}")
+    print(f"  n_Monte_Carlo_samples: {args.n_Monte_Carlo_samples}")
+    print(f"  burn_in: {args.burn_in}")
+    print(f"  skips: {args.skips}")
+    print(f"  float_dtype: {args.float_dtype}")
+    print(f"  alt_reads_threshold: {args.alt_reads_threshold}")
+    print(f"  total_reads_threshold: {args.total_reads_threshold}")
+    print(f"  output_dir: {args.output_dir}")
+    print(f"  report_route_score: {args.report_route_score}", flush=True)
+
+
 def main() -> int:
     
     ########## parse arguments
@@ -119,7 +143,7 @@ def main() -> int:
     else:
         seeds = [args.seed]
         
-        
+    print_run_parameters(args, inputs, seeds, routes, max_truncal_cn)
         
     ##### Write output
 
