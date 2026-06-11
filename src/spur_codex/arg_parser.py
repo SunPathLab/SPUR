@@ -23,6 +23,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="Run in batch-processing mode.",
     )
     parser.add_argument("--batch-filepath-list", type=str, help="A file where each row is a read count filepath")
+    parser.add_argument(
+        "--batch-input-paths",
+        nargs="+",
+        help="Read-count file paths for batch scoring without a filepath-list file.",
+    )
     
     # data process
     parser.add_argument("--alt-reads-threshold", type=int, default=3)

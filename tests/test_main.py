@@ -186,3 +186,67 @@ def test_main_runs_batch_reads_file_list_and_writes_one_output_per_input():
 
         assert rows_1[0]["input_path"] == str(reads_csv_1)
         assert rows_2[0]["input_path"] == str(reads_csv_2)
+
+
+def test_main_runs_batch_direct_input_paths_without_file_list():
+    with TemporaryDirectory() as tmpdir:
+        tmp_path = Path(tmpdir)
+        reads_csv_1 = tmp_path / "direct_reads_1.csv"
+        reads_csv_2 = tmp_path / "direct_reads_2.csv"
+        output_dir = tmp_path / "scores"
+        reads_csv_1.write_text(
+            "alt1,ref1,alt2,ref2\n"
+            "5,20,6,20\n"
+            "7,20,8,20\n"
+        )
+        reads_csv_2.write_text(
+            "alt1,ref1,alt2,ref2\n"
+            "6,20,5,20\n"
+            "8,20,7,20\n"
+        )
+
+        old_argv = sys.argv
+        sys.argv = [
+            "spur-codex",
+            "--batch-process",
+            "--batch-input-paths",
+            str(reads_csv_1),
+            str(reads_csv_2),
+            "--output_dir",
+            str(output_dir),
+            "--cn-pair",
+            "3:1_3:1",
+            "--max-truncal-cn",
+            "3",
+            "--max-branch-events",
+            "2",
+            "--n_Monte_Carlo_samples",
+            "4",
+            "--burn-in",
+            "2",
+            "--skips",
+            "1",
+            "--seed",
+            "1",
+            "--sample1_purity",
+            "0.8",
+            "--sample2_purity",
+            "0.8",
+        ]
+        try:
+            assert main() == 0
+        finally:
+            sys.argv = old_argv
+
+        output_tsv_1 = output_dir / "direct_reads_1.tsv"
+        output_tsv_2 = output_dir / "direct_reads_2.tsv"
+        assert output_tsv_1.exists()
+        assert output_tsv_2.exists()
+
+        with output_tsv_1.open() as f:
+            rows_1 = list(csv.DictReader(f, delimiter="\t"))
+        with output_tsv_2.open() as f:
+            rows_2 = list(csv.DictReader(f, delimiter="\t"))
+
+        assert rows_1[0]["input_path"] == str(reads_csv_1)
+        assert rows_2[0]["input_path"] == str(reads_csv_2)

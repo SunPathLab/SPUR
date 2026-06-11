@@ -31,6 +31,8 @@ def process_data(df, alt_thres = 3, depth_thres = 15):
 def load_input_records(args) -> list[dict[str, str | np.ndarray]]:
     if not args.batch_process:
         filepaths = [args.input_path]
+    elif args.batch_input_paths is not None:
+        filepaths = args.batch_input_paths
     else:
         path_file = Path(args.batch_filepath_list)
         filepaths = [
@@ -92,8 +94,10 @@ def main() -> int:
     
     # error handling
     if args.batch_process is True:
-        if args.batch_filepath_list is None:
-            raise ValueError("--batch-filepath-list is required when --batch-process is set.")
+        if args.batch_filepath_list is None and args.batch_input_paths is None:
+            raise ValueError("--batch-filepath-list or --batch-input-paths is required when --batch-process is set.")
+        if args.batch_filepath_list is not None and args.batch_input_paths is not None:
+            raise ValueError("Use only one of --batch-filepath-list or --batch-input-paths.")
     else:
         if args.input_path is None:
             raise ValueError("--input_path is required.")

@@ -18,6 +18,9 @@ def test_build_parser_preserves_main_cli_options():
             "--calculate-uncertainty",
             "--seed-filepath",
             "seeds.txt",
+            "--batch-input-paths",
+            "a.csv",
+            "b.csv",
         ]
     )
 
@@ -28,3 +31,4 @@ def test_build_parser_preserves_main_cli_options():
     assert args.max_truncal_cn == 6
     assert args.calculate_uncertainty is True
     assert args.seed_filepath == "seeds.txt"
+    assert args.batch_input_paths == ["a.csv", "b.csv"]
