@@ -3,6 +3,8 @@ import sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+import pytest
+
 from spur_codex.main import main
 
 
@@ -250,3 +252,65 @@ def test_main_runs_batch_direct_input_paths_without_file_list():
 
         assert rows_1[0]["input_path"] == str(reads_csv_1)
         assert rows_2[0]["input_path"] == str(reads_csv_2)
+
+
+def test_main_requires_output_dir():
+    with TemporaryDirectory() as tmpdir:
+        tmp_path = Path(tmpdir)
+        reads_csv = tmp_path / "example_reads.csv"
+        reads_csv.write_text(
+            "alt1,ref1,alt2,ref2\n"
+            "5,20,6,20\n"
+            "7,20,8,20\n"
+        )
+
+        old_argv = sys.argv
+        sys.argv = [
+            "spur-codex",
+            "--input_path",
+            str(reads_csv),
+            "--cn-pair",
+            "3:1_3:1",
+            "--sample1_purity",
+            "0.8",
+            "--sample2_purity",
+            "0.8",
+        ]
+        try:
+            with pytest.raises(ValueError, match="--output_dir"):
+                main()
+        finally:
+            sys.argv = old_argv
+
+
+def test_main_requires_seed_filepath_for_uncertainty():
+    with TemporaryDirectory() as tmpdir:
+        tmp_path = Path(tmpdir)
+        reads_csv = tmp_path / "example_reads.csv"
+        output_dir = tmp_path / "scores"
+        reads_csv.write_text(
+            "alt1,ref1,alt2,ref2\n"
+            "5,20,6,20\n"
+            "7,20,8,20\n"
+        )
+
+        old_argv = sys.argv
+        sys.argv = [
+            "spur-codex",
+            "--input_path",
+            str(reads_csv),
+            "--output_dir",
+            str(output_dir),
+            "--cn-pair",
+            "3:1_3:1",
+            "--sample1_purity",
+            "0.8",
+            "--sample2_purity",
+            "0.8",
+            "--calculate-uncertainty",
+        ]
+        try:
+            with pytest.raises(ValueError, match="--seed-filepath"):
+                main()
+        finally:
+            sys.argv = old_argv

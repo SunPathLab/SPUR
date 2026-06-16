@@ -8,7 +8,7 @@ from .arg_parser import build_parser
 from .enumeration import RouteEnumerator
 from .notation import parse_between_sample_cn
 from .scoring import Scorer
-from .route_filter import RouteFilter
+from .route_filter import RouteFilter, filter_routes, split_routes
 
 
 
@@ -72,6 +72,7 @@ def print_run_parameters(args, inputs, seeds, routes, max_truncal_cn) -> None:
     print(f"  max_branch_events: {args.max_branch_events}")
     print(f"  route_filter: {args.route_filter}")
     print(f"  route_filter_threshold: {args.route_filter_threshold}")
+    print(f"  mixed_gain_loss_route_definition: {args.mixed_gain_loss_route_definition}")
     print(f"  n_routes_scored: {len(routes)}")
     print(f"  n_inputs: {len(inputs)}")
     print(f"  seeds: {','.join(map(str, seeds))}")
@@ -83,6 +84,7 @@ def print_run_parameters(args, inputs, seeds, routes, max_truncal_cn) -> None:
     print(f"  total_reads_threshold: {args.total_reads_threshold}")
     print(f"  output_dir: {args.output_dir}")
     print(f"  report_route_score: {args.report_route_score}", flush=True)
+    
 
 
 def main() -> int:
@@ -106,6 +108,12 @@ def main() -> int:
         if args.route_filter_threshold is None:
             raise ValueError("--route-filter-threshold is required when --route-filter is not 'none'.")
 
+    if args.output_dir is None:
+        raise ValueError("--output_dir is required.")
+
+    if args.calculate_uncertainty and args.seed_filepath is None:
+        raise ValueError("--seed-filepath is required when --calculate-uncertainty is set.")
+    
     
     ########## route enumeration
     # first determine the set of truncal_cn for enumeration
@@ -134,6 +142,22 @@ def main() -> int:
             tuple(routes),
             args.route_filter_threshold,
         )
+    
+    # this is only for test. use old complex definition
+    if args.mixed_gain_loss_route_definition == "both_branch_del":
+        # split routes into pure-gain and mixed-gain-loss
+        split = split_routes(routes)
+        pure_gain_routes = split.pure_gain
+        mixed_gain_loss_routes = split.mixed_gain_loss
+        # then get routes with both branches with DEL
+        both_branch_del_routes = filter_routes(
+        mixed_gain_loss_routes,
+        predicate=lambda r: r.branch1.has_deletion and r.branch2.has_deletion,
+        )
+        # combine pure-gain routes and both-branch-del routes
+        routes = pure_gain_routes + both_branch_del_routes
+    if not routes:
+        raise ValueError("No routes remain after enumeration/filtering.")
     
     
     ##### route scoring

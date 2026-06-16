@@ -41,12 +41,6 @@ def build_parser() -> argparse.ArgumentParser:
         help="Defaults to min(max(total CN) + 2, 6).",
     )
     parser.add_argument("--max-branch-events", type=int, default=5)
-    # parser.add_argument(
-    #     "--route-set",
-    #     choices=["all", "pure_gain", "complex", "both_del", "one_branch_del", "sample1_branch_del", "sample2_branch_del"],
-    #     default="all",
-    #     help="Subset to group and optionally encode.",
-    # )
     parser.add_argument(
         "--route-filter",
         choices=[
@@ -63,6 +57,23 @@ def build_parser() -> argparse.ArgumentParser:
         type=int,
         default=None,
     )
+    
+    # this is only for experienments
+    parser.add_argument(
+        "--mixed-gain-loss-route-definition",
+        choices=[
+            "both_branch_del",
+            "any_branch_del"
+        ],
+        default="one_branch_del",
+        help=(
+          "Definition of mixed gain-loss routes. "
+          "'any_branch_del' keeps routes where at least one branch has deletion; "
+          "'both_branch_del' keeps only routes where both branches have deletion."
+      ),
+    )
+    
+    
     
     # Computation options
     parser.add_argument("--n_Monte_Carlo_samples", type=int, default=4000)

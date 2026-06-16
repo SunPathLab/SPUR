@@ -15,12 +15,10 @@ class RouteType(Enum):
     PURE_GAIN = "pure_gain"
     MIXED_GAIN_LOSS = "mixed_gain_loss"
 
-
 @dataclass(frozen=True)
 class GainHistoryTree:
     major_tree: TreeNode
     minor_tree: TreeNode
-
 
 @dataclass(frozen=True)
 class Truncal:
@@ -59,7 +57,6 @@ class Truncal:
         top_right = np.zeros((major_block.shape[0], minor_block.shape[1]), dtype=int)
         bottom_left = np.zeros((minor_block.shape[0], major_block.shape[1]), dtype=int)
         return np.block([[major_block, top_right], [bottom_left, minor_block]])
-
 
 @dataclass(frozen=True)
 class Branch:

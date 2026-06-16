@@ -39,7 +39,7 @@ class Scorer:
             n_samples=n_samples,
             scale=scale,
             rng=rng
-        ) 
+        )
         
         B = binom_pmf_tensor(alt1, dep1, alt2, dep2, joint_vafs_samples)
         
@@ -59,7 +59,6 @@ class Scorer:
             
             # then get H, which is the timing-joint multiplicity contribution tensor
             H = group.h_tensor()
-            
             
             scores = score_thb_shared_t_shared_b(T, H, B, l_chunk=l_chunk, r_chunk=r_chunk, eps=eps, dtype=dtype)
             all_routes.extend(group.routes)
