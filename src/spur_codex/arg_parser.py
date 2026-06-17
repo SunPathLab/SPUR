@@ -65,7 +65,7 @@ def build_parser() -> argparse.ArgumentParser:
             "both_branch_del",
             "any_branch_del"
         ],
-        default="one_branch_del",
+        default="any_branch_del",
         help=(
           "Definition of mixed gain-loss routes. "
           "'any_branch_del' keeps routes where at least one branch has deletion; "
@@ -77,7 +77,7 @@ def build_parser() -> argparse.ArgumentParser:
     
     # Computation options
     parser.add_argument("--n_Monte_Carlo_samples", type=int, default=4000)
-    parser.add_argument("--joint_vafs_scale", type=float, default=0.1)
+    parser.add_argument("--joint_vafs_scale", type=float, default=0.05)
     parser.add_argument("--burn-in", type=int, default=200)
     parser.add_argument("--skips", type=int, default=50)
     parser.add_argument("--float-dtype", choices=["float32", "float64"], default="float64")

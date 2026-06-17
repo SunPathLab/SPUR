@@ -32,3 +32,10 @@ def test_build_parser_preserves_main_cli_options():
     assert args.calculate_uncertainty is True
     assert args.seed_filepath == "seeds.txt"
     assert args.batch_input_paths == ["a.csv", "b.csv"]
+
+
+def test_build_parser_defaults_to_old_spur_vaf_scale():
+    args = build_parser().parse_args([])
+
+    assert args.joint_vafs_scale == 0.05
+    assert args.mixed_gain_loss_route_definition == "any_branch_del"

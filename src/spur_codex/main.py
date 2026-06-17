@@ -77,6 +77,7 @@ def print_run_parameters(args, inputs, seeds, routes, max_truncal_cn) -> None:
     print(f"  n_inputs: {len(inputs)}")
     print(f"  seeds: {','.join(map(str, seeds))}")
     print(f"  n_Monte_Carlo_samples: {args.n_Monte_Carlo_samples}")
+    print(f"  joint_vafs_scale: {args.joint_vafs_scale}")
     print(f"  burn_in: {args.burn_in}")
     print(f"  skips: {args.skips}")
     print(f"  float_dtype: {args.float_dtype}")
@@ -151,8 +152,8 @@ def main() -> int:
         mixed_gain_loss_routes = split.mixed_gain_loss
         # then get routes with both branches with DEL
         both_branch_del_routes = filter_routes(
-        mixed_gain_loss_routes,
-        predicate=lambda r: r.branch1.has_deletion and r.branch2.has_deletion,
+            mixed_gain_loss_routes,
+            predicate=lambda r: r.branch1.has_deletion and r.branch2.has_deletion,
         )
         # combine pure-gain routes and both-branch-del routes
         routes = pure_gain_routes + both_branch_del_routes
@@ -202,6 +203,7 @@ def main() -> int:
                 sample2_prevalence=args.sample2_prevalence,
                 burn_in=args.burn_in, skips=args.skips,
                 n_samples=args.n_Monte_Carlo_samples,
+                scale=args.joint_vafs_scale,
                 rng=rng,
                 dtype=args.float_dtype,
             )

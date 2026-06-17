@@ -14,7 +14,7 @@ class Scorer:
     def score(self, alt1, dep1, alt2, dep2,
               routes: Sequence[Route],
               sample1_pu: float, sample2_pu: float, 
-              sample1_prevalence: float = 1, sample2_prevalence: float = 1, n_samples: int = 1000, scale: float = 0.1, 
+              sample1_prevalence: float = 1, sample2_prevalence: float = 1, n_samples: int = 1000, scale: float = 0.05, 
               burn_in: int = 200, skips: int = 50, 
               rng: np.random.Generator = None,
               l_chunk: int = 256, r_chunk: int = 1024, eps: float = 1e-30,
@@ -39,7 +39,7 @@ class Scorer:
             n_samples=n_samples,
             scale=scale,
             rng=rng
-        )
+        ) 
         
         B = binom_pmf_tensor(alt1, dep1, alt2, dep2, joint_vafs_samples)
         
