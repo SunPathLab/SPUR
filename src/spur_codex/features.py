@@ -26,6 +26,15 @@ def _evidence_or_nan(scores: np.ndarray) -> float:
     return float(logsumexp(scores) - np.log(len(scores))) if len(scores) else float("nan")
     
 def score_features(route_score_result: RouteScoreResult) -> dict[str, float | int]:
+    
+    # need to first filter out invalid scores (nan or -inf) before computing features
+    valid_scores_mask = np.isfinite(route_score_result.scores)
+
+    route_score_result = RouteScoreResult(
+        routes=tuple(r for r, valid in zip(route_score_result.routes, valid_scores_mask) if valid),
+        scores=route_score_result.scores[valid_scores_mask]
+    )
+    
     pure_gain_mask = np.array([route.is_pure_gain for route in route_score_result.routes])
     pure_gain_scores = route_score_result.scores[pure_gain_mask]
     mixed_gain_loss_scores = route_score_result.scores[~pure_gain_mask]

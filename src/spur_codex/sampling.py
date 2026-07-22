@@ -32,7 +32,28 @@ class TimingSampler:
         dtype=np.float32,
     ) -> np.ndarray:
         matrix = truncal.constraint_matrix
-        init = self._feasible_timing(matrix)
+        values = np.ones(matrix.shape[0])
+        return self.sample_timing_vectors_from_constraints(
+            matrix,
+            values,
+            rng,
+            n_samples=n_samples,
+            burn_in=burn_in,
+            skips=skips,
+            dtype=dtype,
+        )
+
+    def sample_timing_vectors_from_constraints(
+        self,
+        matrix: np.ndarray,
+        values: np.ndarray,
+        rng: np.random.Generator,
+        n_samples: int = 1000,
+        burn_in: int = 200,
+        skips: int = 50,
+        dtype=np.float32,
+    ) -> np.ndarray:
+        init = self._feasible_timing(matrix, values)
         basis = null_space(matrix)
         samples = hit_and_run(basis, init, rng, n_samples=n_samples, burn_in=burn_in, skips=skips)
         samples = np.clip(samples, 0.0, 1.0)
@@ -40,9 +61,9 @@ class TimingSampler:
             samples = samples.astype(dtype)
         return samples
 
-    def _feasible_timing(self, matrix: np.ndarray) -> np.ndarray:
-        init, residual = nnls(matrix, np.ones(matrix.shape[0]))
-        if not np.allclose(matrix @ init, np.ones(matrix.shape[0]), atol=1e-8):
+    def _feasible_timing(self, matrix: np.ndarray, values: np.ndarray) -> np.ndarray:
+        init, residual = nnls(matrix, values)
+        if not np.allclose(matrix @ init, values, atol=1e-8):
             raise ValueError(f"Could not find feasible timing; NNLS residual={residual}.")
         return init
 

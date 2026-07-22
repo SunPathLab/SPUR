@@ -16,11 +16,15 @@ class TruncalEnumerator:
             raise ValueError("Minor copy number cannot exceed major copy number.")
 
         major_trees = all_full_binary_trees(major_cn)
-        minor_trees = all_full_binary_trees(minor_cn)
+        
+        # LOH or nonLOH
+        minor_trees = all_full_binary_trees(minor_cn) if minor_cn > 0 else [None]
+        
+        # assign node IDs to all trees, so that we can extract paths from leaves to root later
         for tree in major_trees + minor_trees:
-            assign_node_ids(tree)
-        
-        
+            if tree is not None:
+                assign_node_ids(tree)
+
         # for each (major_tree,minor_tree),
         # construct a gain history tree,
         # (Computation note: since the object is immutable, no need to copy the tree for each truncal.)
@@ -45,6 +49,12 @@ class TruncalEnumerator:
                 truncals.extend(self.enumerate_for_state(total_cn, minor_cn))
         return truncals
 
+    def enumerate_loh_up_to(self, max_truncal_cn: int) -> List[Truncal]:
+        truncals: List[Truncal] = []
+        for total_cn in range(1, max_truncal_cn + 1):
+            truncals.extend(self.enumerate_for_state(total_cn, minor_cn=0))
+        return truncals
+
 
 class BranchEnumerator:
     def enumerate(self, truncal: Truncal, target_total_cn: int, target_minor_cn: int, max_events: int) -> List[Branch]:
@@ -61,22 +71,26 @@ class BranchEnumerator:
         next_index = 0
         for major_vector in major_vectors:
             for minor_vector in minor_vectors:
+                # combine the major and minor vectors to form the copy fate vector
                 copy_fate_vector = major_vector + minor_vector
+                
                 branch = Branch(
                     copy_fate_vector=copy_fate_vector,
                     branch_index=next_index,
                     sample_total_cn=target_total_cn,
                     sample_minor_cn=target_minor_cn,
                 )
+                
                 next_index += 1
+                
                 if branch.n_events <= max_events:
                     branches.append(branch)
         return branches
 
     @staticmethod
     def _allele_vectors(n_truncal_copies: int, target_cn: int) -> List[Tuple[int, ...]]:
-        if n_truncal_copies <= 0:
-            return []
+        if n_truncal_copies == 0:
+            return [()] if target_cn == 0 else []
         if target_cn == 0:
             return [tuple(0 for _ in range(n_truncal_copies))]
 
@@ -123,8 +137,14 @@ class RouteEnumerator:
     ) -> List[Route]:
         if max_truncal_cn is None:
             raise TypeError("max_truncal_cn is required.")
+
+        if sample1_cn[1] == 0 and sample2_cn[1] == 0:
+            truncals = self.truncal_enumerator.enumerate_loh_up_to(max_truncal_cn)
+        else:
+            truncals = self.truncal_enumerator.enumerate_up_to(max_truncal_cn)
+
         routes: List[Route] = []
-        for truncal in self.truncal_enumerator.enumerate_up_to(max_truncal_cn):
+        for truncal in truncals:
             routes.extend(
                 self.enumerate_for_truncal(
                     truncal=truncal,

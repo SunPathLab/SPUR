@@ -1,0 +1,166 @@
+archive	dataset_class	cn_pair	route_type	n_csv_profiles	n_profiles_metadata	n_ssnvs	sample1_purity	sample2_purity	max_truncal_cn	route_filter	route_filter_threshold	n_timing_samples_per_route	hit_and_run_burn_in	hit_and_run_skip_steps	density_thres	density_thres_tol	vaf_scale	total_reads_mean	total_reads_var	seed	date_generated	dataset_dir
+simulated_loh.tar.gz	LOH	1:0_1:0	mixed_gain_loss	800	800	80	0.8	0.8	3			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:36:57.500388	simulated_loh/1:0_1:0_mixed_gain_loss
+simulated_loh.tar.gz	LOH	1:0_1:0	pure_gain	800	800	80	0.8	0.8	3			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:36:37.853622	simulated_loh/1:0_1:0_pure_gain
+simulated_loh.tar.gz	LOH	2:0_1:0	mixed_gain_loss	800	800	80	0.8	0.8	4			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:37:36.682986	simulated_loh/2:0_1:0_mixed_gain_loss
+simulated_loh.tar.gz	LOH	2:0_1:0	pure_gain	800	800	80	0.8	0.8	4			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:37:17.261661	simulated_loh/2:0_1:0_pure_gain
+simulated_loh.tar.gz	LOH	2:0_2:0	mixed_gain_loss	800	800	80	0.8	0.8	4			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:38:22.063200	simulated_loh/2:0_2:0_mixed_gain_loss
+simulated_loh.tar.gz	LOH	2:0_2:0	pure_gain	800	800	80	0.8	0.8	4			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:38:02.424742	simulated_loh/2:0_2:0_pure_gain
+simulated_loh.tar.gz	LOH	3:0_1:0	mixed_gain_loss	800	800	80	0.8	0.8	5			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:39:01.679348	simulated_loh/3:0_1:0_mixed_gain_loss
+simulated_loh.tar.gz	LOH	3:0_1:0	pure_gain	800	800	80	0.8	0.8	5			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:38:42.224578	simulated_loh/3:0_1:0_pure_gain
+simulated_loh.tar.gz	LOH	3:0_2:0	mixed_gain_loss	800	800	80	0.8	0.8	5			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:39:47.129722	simulated_loh/3:0_2:0_mixed_gain_loss
+simulated_loh.tar.gz	LOH	3:0_2:0	pure_gain	800	800	80	0.8	0.8	5			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:39:27.670641	simulated_loh/3:0_2:0_pure_gain
+simulated_loh.tar.gz	LOH	3:0_3:0	mixed_gain_loss	800	800	80	0.8	0.8	5			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:40:33.143305	simulated_loh/3:0_3:0_mixed_gain_loss
+simulated_loh.tar.gz	LOH	3:0_3:0	pure_gain	800	800	80	0.8	0.8	5			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:40:13.096804	simulated_loh/3:0_3:0_pure_gain
+simulated_loh.tar.gz	LOH	4:0_1:0	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:41:13.328034	simulated_loh/4:0_1:0_mixed_gain_loss
+simulated_loh.tar.gz	LOH	4:0_1:0	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:40:52.865637	simulated_loh/4:0_1:0_pure_gain
+simulated_loh.tar.gz	LOH	4:0_2:0	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:42:01.847528	simulated_loh/4:0_2:0_mixed_gain_loss
+simulated_loh.tar.gz	LOH	4:0_2:0	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:41:40.901368	simulated_loh/4:0_2:0_pure_gain
+simulated_loh.tar.gz	LOH	4:0_3:0	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:42:50.835491	simulated_loh/4:0_3:0_mixed_gain_loss
+simulated_loh.tar.gz	LOH	4:0_3:0	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:42:28.762417	simulated_loh/4:0_3:0_pure_gain
+simulated_loh.tar.gz	LOH	4:0_4:0	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:43:39.058995	simulated_loh/4:0_4:0_mixed_gain_loss
+simulated_loh.tar.gz	LOH	4:0_4:0	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:43:18.154253	simulated_loh/4:0_4:0_pure_gain
+simulated_loh.tar.gz	LOH	5:0_1:0	mixed_gain_loss	800	800	80	0.8	0.8	6			50		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:44:18.516338	simulated_loh/5:0_1:0_mixed_gain_loss
+simulated_loh.tar.gz	LOH	5:0_1:0	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:43:58.885325	simulated_loh/5:0_1:0_pure_gain
+simulated_loh.tar.gz	LOH	5:0_3:0	mixed_gain_loss	800	800	80	0.8	0.8	6			50		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:45:04.202373	simulated_loh/5:0_3:0_mixed_gain_loss
+simulated_loh.tar.gz	LOH	5:0_3:0	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:44:44.244073	simulated_loh/5:0_3:0_pure_gain
+simulated_loh.tar.gz	LOH	5:0_4:0	mixed_gain_loss	800	800	80	0.8	0.8	6			50		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:45:51.140095	simulated_loh/5:0_4:0_mixed_gain_loss
+simulated_loh.tar.gz	LOH	5:0_4:0	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:45:31.007189	simulated_loh/5:0_4:0_pure_gain
+simulated_loh.tar.gz	LOH	5:0_5:0	mixed_gain_loss	800	800	80	0.8	0.8	6			50		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:46:33.909595	simulated_loh/5:0_5:0_mixed_gain_loss
+simulated_loh.tar.gz	LOH	5:0_5:0	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:46:13.173240	simulated_loh/5:0_5:0_pure_gain
+simulated_loh.tar.gz	LOH	6:0_3:0	mixed_gain_loss	800	800	80	0.8	0.8	6			50		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:51:39.915222	simulated_loh/6:0_3:0_mixed_gain_loss
+simulated_loh.tar.gz	LOH	6:0_3:0	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:47:02.303352	simulated_loh/6:0_3:0_pure_gain
+simulated_loh.tar.gz	LOH	6:0_4:0	mixed_gain_loss	800	800	80	0.8	0.8	6			50		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:52:20.766584	simulated_loh/6:0_4:0_mixed_gain_loss
+simulated_loh.tar.gz	LOH	6:0_4:0	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:52:00.401482	simulated_loh/6:0_4:0_pure_gain
+simulated_loh.tar.gz	LOH	6:0_5:0	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T12:02:55.844128	simulated_loh/6:0_5:0_mixed_gain_loss
+simulated_loh.tar.gz	LOH	6:0_5:0	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T11:52:46.648238	simulated_loh/6:0_5:0_pure_gain
+simulated_loh.tar.gz	LOH	6:0_6:0	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T12:03:45.666360	simulated_loh/6:0_6:0_mixed_gain_loss
+simulated_loh.tar.gz	LOH	6:0_6:0	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-07-08T12:03:24.705933	simulated_loh/6:0_6:0_pure_gain
+simulated_datasets.tar.gz	nonLOH	3:1_2:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	5			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:53:16.764111	simulated_datasets/3:1_2:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	3:1_2:1	mixed_gain_loss	800	800	80	0.8	0.8	5			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:53:06.515358	simulated_datasets/3:1_2:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	3:1_2:1	pure_gain	800	800	80	0.8	0.8	5			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:52:57.029349	simulated_datasets/3:1_2:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	3:1_3:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	5			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:53:49.897070	simulated_datasets/3:1_3:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	3:1_3:1	mixed_gain_loss	800	800	80	0.8	0.8	5			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:53:38.636815	simulated_datasets/3:1_3:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	3:1_3:1	pure_gain	800	800	80	0.8	0.8	5			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:53:28.453508	simulated_datasets/3:1_3:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	4:1_2:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:54:25.696417	simulated_datasets/4:1_2:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	4:1_2:1	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:54:11.134030	simulated_datasets/4:1_2:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	4:1_2:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:53:59.255188	simulated_datasets/4:1_2:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	4:1_3:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:55:14.226413	simulated_datasets/4:1_3:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	4:1_3:1	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:54:51.392538	simulated_datasets/4:1_3:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	4:1_3:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:54:37.122548	simulated_datasets/4:1_3:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	4:1_4:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:56:35.642432	simulated_datasets/4:1_4:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	4:1_4:1	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:55:46.627381	simulated_datasets/4:1_4:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	4:1_4:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:55:25.752811	simulated_datasets/4:1_4:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	4:2_2:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:57:08.018860	simulated_datasets/4:2_2:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	4:2_2:1	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:56:55.984724	simulated_datasets/4:2_2:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	4:2_2:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:56:44.933712	simulated_datasets/4:2_2:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	4:2_3:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:57:48.657392	simulated_datasets/4:2_3:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	4:2_3:1	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:57:31.810862	simulated_datasets/4:2_3:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	4:2_3:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:57:19.458897	simulated_datasets/4:2_3:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	4:2_4:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:58:45.907993	simulated_datasets/4:2_4:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	4:2_4:1	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:58:15.777769	simulated_datasets/4:2_4:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	4:2_4:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:58:00.104360	simulated_datasets/4:2_4:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	4:2_4:2	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:59:31.320084	simulated_datasets/4:2_4:2_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	4:2_4:2	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:59:12.967596	simulated_datasets/4:2_4:2_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	4:2_4:2	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:58:58.381226	simulated_datasets/4:2_4:2_pure_gain
+simulated_datasets.tar.gz	nonLOH	5:1_2:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:00:05.741721	simulated_datasets/5:1_2:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:1_2:1	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:59:52.218797	simulated_datasets/5:1_2:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:1_2:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T19:59:40.465659	simulated_datasets/5:1_2:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	5:1_3:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:01:11.897014	simulated_datasets/5:1_3:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:1_3:1	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:00:36.149332	simulated_datasets/5:1_3:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:1_3:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:00:16.910002	simulated_datasets/5:1_3:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	5:1_4:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:02:54.537268	simulated_datasets/5:1_4:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:1_4:1	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:01:46.582548	simulated_datasets/5:1_4:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:1_4:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:01:23.240939	simulated_datasets/5:1_4:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	5:1_4:2	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:03:50.172959	simulated_datasets/5:1_4:2_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:1_4:2	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:03:21.773244	simulated_datasets/5:1_4:2_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:1_4:2	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:03:05.622300	simulated_datasets/5:1_4:2_pure_gain
+simulated_datasets.tar.gz	nonLOH	5:1_5:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:08:13.114148	simulated_datasets/5:1_5:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:1_5:1	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:04:43.424330	simulated_datasets/5:1_5:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:1_5:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:04:01.712547	simulated_datasets/5:1_5:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	5:2_2:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:08:45.059426	simulated_datasets/5:2_2:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:2_2:1	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:08:33.099724	simulated_datasets/5:2_2:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:2_2:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:08:22.127405	simulated_datasets/5:2_2:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	5:2_3:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:09:39.911574	simulated_datasets/5:2_3:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:2_3:1	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:09:12.390727	simulated_datasets/5:2_3:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:2_3:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:08:56.201785	simulated_datasets/5:2_3:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	5:2_4:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:10:46.804317	simulated_datasets/5:2_4:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:2_4:1	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:10:09.272243	simulated_datasets/5:2_4:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:2_4:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:09:51.026309	simulated_datasets/5:2_4:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	5:2_4:2	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:11:47.083000	simulated_datasets/5:2_4:2_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:2_4:2	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:11:12.826623	simulated_datasets/5:2_4:2_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:2_4:2	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:10:57.948217	simulated_datasets/5:2_4:2_pure_gain
+simulated_datasets.tar.gz	nonLOH	5:2_5:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:13:56.893223	simulated_datasets/5:2_5:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:2_5:1	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:12:27.320773	simulated_datasets/5:2_5:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:2_5:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:11:58.427866	simulated_datasets/5:2_5:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	5:2_5:2	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:15:54.867986	simulated_datasets/5:2_5:2_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:2_5:2	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:14:32.165825	simulated_datasets/5:2_5:2_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	5:2_5:2	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:14:08.246688	simulated_datasets/5:2_5:2_pure_gain
+simulated_datasets.tar.gz	nonLOH	6:1_2:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:16:35.717869	simulated_datasets/6:1_2:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:1_2:1	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:16:18.299259	simulated_datasets/6:1_2:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:1_2:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:16:03.951329	simulated_datasets/6:1_2:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	6:1_3:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:17:44.119830	simulated_datasets/6:1_3:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:1_3:1	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:17:05.983004	simulated_datasets/6:1_3:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:1_3:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:16:46.922551	simulated_datasets/6:1_3:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	6:1_4:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:20:37.967736	simulated_datasets/6:1_4:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:1_4:1	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:18:29.087653	simulated_datasets/6:1_4:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:1_4:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:17:55.511687	simulated_datasets/6:1_4:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	6:1_4:2	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:21:51.815880	simulated_datasets/6:1_4:2_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:1_4:2	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:21:10.113894	simulated_datasets/6:1_4:2_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:1_4:2	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:20:49.121108	simulated_datasets/6:1_4:2_pure_gain
+simulated_datasets.tar.gz	nonLOH	6:1_5:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:27:46.529254	simulated_datasets/6:1_5:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:1_5:1	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:22:42.758423	simulated_datasets/6:1_5:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:1_5:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:22:03.741427	simulated_datasets/6:1_5:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	6:1_6:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:59:44.047682	simulated_datasets/6:1_6:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:1_6:1	mixed_gain_loss	800	800	80	0.8	0.8	6			100		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:29:04.325646	simulated_datasets/6:1_6:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:1_6:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:27:59.640535	simulated_datasets/6:1_6:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	6:2_2:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:00:15.310229	simulated_datasets/6:2_2:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:2_2:1	mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:00:04.325256	simulated_datasets/6:2_2:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:2_2:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T20:59:53.555658	simulated_datasets/6:2_2:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	6:2_3:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:00:52.936931	simulated_datasets/6:2_3:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:2_3:1	mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:00:38.331584	simulated_datasets/6:2_3:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:2_3:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:00:26.614278	simulated_datasets/6:2_3:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	6:2_4:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:01:43.784620	simulated_datasets/6:2_4:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:2_4:1	mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:01:19.154912	simulated_datasets/6:2_4:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:2_4:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:01:04.225964	simulated_datasets/6:2_4:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	6:2_4:2	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:02:26.026034	simulated_datasets/6:2_4:2_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:2_4:2	mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:02:07.673049	simulated_datasets/6:2_4:2_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:2_4:2	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:01:55.089223	simulated_datasets/6:2_4:2_pure_gain
+simulated_datasets.tar.gz	nonLOH	6:2_5:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:03:28.573098	simulated_datasets/6:2_5:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:2_5:1	mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:02:52.944504	simulated_datasets/6:2_5:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:2_5:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:02:37.504195	simulated_datasets/6:2_5:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	6:2_5:2	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:04:22.847023	simulated_datasets/6:2_5:2_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:2_5:2	mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:03:53.586691	simulated_datasets/6:2_5:2_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:2_5:2	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:03:40.164230	simulated_datasets/6:2_5:2_pure_gain
+simulated_datasets.tar.gz	nonLOH	6:2_6:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:06:18.183528	simulated_datasets/6:2_6:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:2_6:1	mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:04:55.065922	simulated_datasets/6:2_6:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:2_6:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:04:34.747426	simulated_datasets/6:2_6:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	6:2_6:2	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:08:09.520402	simulated_datasets/6:2_6:2_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:2_6:2	mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:06:47.838479	simulated_datasets/6:2_6:2_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:2_6:2	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:06:30.239596	simulated_datasets/6:2_6:2_pure_gain
+simulated_datasets.tar.gz	nonLOH	6:3_4:1	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:08:54.614477	simulated_datasets/6:3_4:1_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:3_4:1	mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:08:36.285471	simulated_datasets/6:3_4:1_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:3_4:1	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:08:22.182230	simulated_datasets/6:3_4:1_pure_gain
+simulated_datasets.tar.gz	nonLOH	6:3_4:2	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:09:36.543311	simulated_datasets/6:3_4:2_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:3_4:2	mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:09:19.666958	simulated_datasets/6:3_4:2_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:3_4:2	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:09:07.060942	simulated_datasets/6:3_4:2_pure_gain
+simulated_datasets.tar.gz	nonLOH	6:3_5:2	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:10:25.958324	simulated_datasets/6:3_5:2_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:3_5:2	mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:10:01.327320	simulated_datasets/6:3_5:2_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:3_5:2	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:09:48.454210	simulated_datasets/6:3_5:2_pure_gain
+simulated_datasets.tar.gz	nonLOH	6:3_6:3	conclusive_mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:11:31.651438	simulated_datasets/6:3_6:3_conclusive_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:3_6:3	mixed_gain_loss	800	800	80	0.8	0.8	6			20		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:10:52.478832	simulated_datasets/6:3_6:3_mixed_gain_loss
+simulated_datasets.tar.gz	nonLOH	6:3_6:3	pure_gain	800	800	80	0.8	0.8	6			2000		15	0.1	1e-05	0.01	80.0	100.0	1949	2026-06-09T21:10:38.152571	simulated_datasets/6:3_6:3_pure_gain
+simulated_parsimony.tar.gz	parsimony	3:1_2:1	WGD_parsimony	800																		simulated_parsimony/3:1_2:1_WGD_parsimony
+simulated_parsimony.tar.gz	parsimony	3:1_2:1	nonWGD_parsimony	800																		simulated_parsimony/3:1_2:1_nonWGD_parsimony
+simulated_parsimony.tar.gz	parsimony	3:1_3:1	WGD_parsimony	800																		simulated_parsimony/3:1_3:1_WGD_parsimony
+simulated_parsimony.tar.gz	parsimony	3:1_3:1	nonWGD_parsimony	800																		simulated_parsimony/3:1_3:1_nonWGD_parsimony
+simulated_parsimony.tar.gz	parsimony	4:1_2:1	nonWGD_parsimony	800																		simulated_parsimony/4:1_2:1_nonWGD_parsimony
+simulated_parsimony.tar.gz	parsimony	4:1_3:1	WGD_parsimony	800																		simulated_parsimony/4:1_3:1_WGD_parsimony
+simulated_parsimony.tar.gz	parsimony	4:1_3:1	nonWGD_parsimony	800																		simulated_parsimony/4:1_3:1_nonWGD_parsimony
+simulated_parsimony.tar.gz	parsimony	4:1_4:1	WGD_parsimony	800																		simulated_parsimony/4:1_4:1_WGD_parsimony
+simulated_parsimony.tar.gz	parsimony	4:2_3:1	WGD_parsimony	800																		simulated_parsimony/4:2_3:1_WGD_parsimony
+simulated_parsimony.tar.gz	parsimony	4:2_3:1	nonWGD_parsimony	800																		simulated_parsimony/4:2_3:1_nonWGD_parsimony
+simulated_parsimony.tar.gz	parsimony	4:2_4:2	WGD_parsimony	800																		simulated_parsimony/4:2_4:2_WGD_parsimony
+simulated_parsimony.tar.gz	parsimony	4:2_4:2	nonWGD_parsimony	800																		simulated_parsimony/4:2_4:2_nonWGD_parsimony
+simulated_parsimony.tar.gz	parsimony	5:2_3:1	WGD_parsimony	800																		simulated_parsimony/5:2_3:1_WGD_parsimony
+simulated_parsimony.tar.gz	parsimony	5:2_4:2	WGD_parsimony	800																		simulated_parsimony/5:2_4:2_WGD_parsimony
+simulated_parsimony.tar.gz	parsimony	5:2_5:2	WGD_parsimony	800																		simulated_parsimony/5:2_5:2_WGD_parsimony

@@ -107,3 +107,24 @@ def test_union_shape_is_the_tree_identifier_without_assigned_ids():
     minor_tree = TreeNode()
 
     assert union_tree_shape(major_tree, minor_tree) == "major=(L,L);minor=L"
+
+
+# Verifies that a truncal LOH history can represent the absent minor tree.
+def test_union_shape_represents_empty_minor_tree():
+    major_tree = TreeNode(left=TreeNode(), right=TreeNode())
+
+    assert union_tree_shape(major_tree, None) == "major=(L,L);minor=empty"
+
+
+# Verifies that truncal LOH counts one homolog deletion plus retained-allele gains.
+def test_truncal_loh_event_count_includes_homolog_deletion():
+    truncal = Truncal(
+        truncal_total_cn=2,
+        truncal_minor_cn=0,
+        tree=GainHistoryTree(
+            major_tree=TreeNode(left=TreeNode(), right=TreeNode()),
+            minor_tree=None,
+        ),
+    )
+
+    assert truncal.n_events == 2

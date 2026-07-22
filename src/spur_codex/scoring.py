@@ -24,7 +24,6 @@ class Scorer:
             return RouteScoreResult(routes=tuple(), scores=np.asarray([], dtype=dtype))
         
         
-        
         # First get B, which is the product of binomial PMFs for the observed alt/depth in the two samples, across a grid of joint multiplicity groups
         joint_vafs_samples = JointVAFSampler().sample_joint_vafs(
             sample1_total_cn=routes[0].sample1_total_cn,

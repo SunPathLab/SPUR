@@ -53,7 +53,8 @@ def main() -> None:
     parser.add_argument("--total-reads-var", type=float, default=100)
     parser.add_argument("--float-dtype", choices=["float32", "float64"], default="float64")
     # hit-and-run sampling parameters
-    parser.add_argument("--n-timing-samples-per-route", type=int, default=100)
+    parser.add_argument("--n-timing-samples-per-route", type=int, default=None)
+    parser.add_argument("--max-timing-samples-per-route", type=int, default=None)
     parser.add_argument("--hit-and-run-skip-steps", type=int, default=15)
     parser.add_argument("--hit-and-run-burn-in", type=int, default=25)
     # sample filtering parameters. Ensure sampled JMDs have significant density in non-zero density clusters.
@@ -130,7 +131,9 @@ def main() -> None:
     ########### sample timings, calculate Q's by TH, filter Q
     
     # For pure-gain simulation, we sample more timings per route, since there are only a few pure-gain routes for each cn pair
-    if args.route_type == "pure_gain":
+    if args.n_timing_samples_per_route is not None:
+        n_timing_samples_per_route = args.n_timing_samples_per_route
+    elif args.route_type == "pure_gain":
         n_timing_samples_per_route = 2000
     else:
         if max(sample1_cn[0], sample2_cn[0]) >= 6:
@@ -141,70 +144,78 @@ def main() -> None:
             n_timing_samples_per_route = 100
     
     print(f"Sampling timings and computing Q for {len(routes)} routes ...")
-    print(f"  timing samples per route: {n_timing_samples_per_route}")
-    
-    # then we run the hit-and-for each route
-    Q = []
     progress_every = max(1, len(routes) // 10) if routes else 1
-    for route_i, route in enumerate(routes, start=1):
-        if route_i == 1 or route_i == len(routes) or route_i % progress_every == 0:
-            print(f"  route {route_i}/{len(routes)}")
-        T_route = TimingSampler().sample_timing_vectors(truncal=route.truncal,
-                                                        rng=rng,
-                                                        n_samples=n_timing_samples_per_route,
-                                                        burn_in=args.hit_and_run_burn_in,
-                                                        skips=args.hit_and_run_skip_steps,
-                                                        dtype=np.dtype(args.float_dtype))
-        H_route = route.h()
-        
-        Q_route = T_route@H_route
-        Q_route = Q_route/Q_route.sum(axis=1)[:, np.newaxis]
-        Q.append(Q_route)
-    # convert list of Q_route's to a single Q matrix
-    print("Stacking Q rows ...")
-    Q = np.vstack(Q)
-    print(f"  Q shape before compatibility/density filtering: {Q.shape}")
-    
-    # optional: if conclusive_mixed_gain_loss, run compatibility check for each Q
-    if args.route_type == "conclusive_mixed_gain_loss":
-        print("Checking pure-gain compatibility for conclusive mixed-gain-loss simulation ...")
-        checker = PureGainCompatibilityChecker(
-            max_truncal_cn=max_truncal_cn,
-            route_filter="total_events",
-            route_filter_threshold=8,
-        )
-    
-        compatible = [
-            checker.is_compatible(q, sample1_cn, sample2_cn)
-            for q in Q
-        ]
-        compatible = np.array(compatible, dtype=bool)
-        
-        Q = Q[~compatible] # conclusive mixed_gain_loss (incompatible with pure-gain)   
-        print(f"  compatible Q rows removed: {int(np.sum(compatible))}")
-        print(f"  Q shape after compatibility filtering: {Q.shape}")
-    
-    # filter Q by density threshold
-    # clip very small values to 0 and re-normalize
-    print("Cleaning and filtering Q by density threshold ...")
-    Q = clean_density_matrix(Q, args.density_thres_tol)
-    print(f"{Q}")
-    print(f"Total number of simulated JMDs: {Q.shape[0]}, each with shape {Q.shape[1:]}")
-    
-    # for each row, the probability of each cluster is either very close to 0 or above the density_thres, i.e. no intermediate density value
-    #print((Q <= 0 + tol) | (Q > density_thres - tol))
-    
-    
-    # Detectability. Force density to be LE than a threshold, with tolerance 
-    pass_thres_indices = np.where(((Q <= 0 + args.density_thres_tol) | (Q > args.density_thres - args.density_thres_tol)).all(axis=1))[0]
-    not_pass_thres_indices = np.where(~((Q <= 0 + args.density_thres_tol) | (Q > args.density_thres - args.density_thres_tol)).all(axis=1))[0]
-    print(pass_thres_indices)
-    print(f"Number of Q that pass the density threshold check: {len(pass_thres_indices)} out of {Q.shape[0]}")
-    print(f"Number of Q that do not pass the density threshold check: {len(not_pass_thres_indices)} out of {Q.shape[0]}")
-    print(f"Not pass threshold Qs: {Q[not_pass_thres_indices]}")
-    
+
+    while True:
+        print(f"  timing samples per route: {n_timing_samples_per_route}")
+        q_rows = []
+        for route_i, route in enumerate(routes, start=1):
+            if route_i == 1 or route_i == len(routes) or route_i % progress_every == 0:
+                print(f"  route {route_i}/{len(routes)}")
+            T_route = TimingSampler().sample_timing_vectors(
+                truncal=route.truncal,
+                rng=rng,
+                n_samples=n_timing_samples_per_route,
+                burn_in=args.hit_and_run_burn_in,
+                skips=args.hit_and_run_skip_steps,
+                dtype=np.dtype(args.float_dtype),
+            )
+            Q_route = T_route @ route.h()
+            row_sums = Q_route.sum(axis=1)
+            Q_route = Q_route[row_sums > 0]
+            Q_route = Q_route / Q_route.sum(axis=1, keepdims=True)
+            q_rows.append(Q_route)
+
+        Q = np.vstack(q_rows)
+        Q = clean_density_matrix(Q, args.density_thres_tol)
+        pass_mask = (
+            (Q <= args.density_thres_tol)
+            | (Q > args.density_thres - args.density_thres_tol)
+        ).all(axis=1)
+        Q = Q[pass_mask]
+        Q = np.unique(np.round(Q, decimals=12), axis=0)
+
+        if args.route_type == "conclusive_mixed_gain_loss":
+            checker = PureGainCompatibilityChecker(
+                max_truncal_cn=max_truncal_cn,
+                route_filter="total_events",
+                route_filter_threshold=8,
+            )
+            compatible = np.array(
+                [checker.is_compatible(q, sample1_cn, sample2_cn) for q in Q],
+                dtype=bool,
+            )
+            Q = Q[~compatible]
+
+        print(f"  usable JMD rows: {len(Q)}")
+
+        if len(Q) >= args.n_samples:
+            break
+
+        if (
+            args.max_timing_samples_per_route is not None
+            and n_timing_samples_per_route >= args.max_timing_samples_per_route
+        ):
+            raise ValueError(
+                "Unable to generate enough usable JMD rows before reaching "
+                f"--max-timing-samples-per-route={args.max_timing_samples_per_route}."
+            )
+
+        if len(Q) == 0:
+            n_timing_samples_per_route *= 2
+        else:
+            n_timing_samples_per_route = int(
+                np.ceil(
+                    n_timing_samples_per_route
+                    * args.n_samples
+                    / len(Q)
+                    * 1.2
+                )
+            )
+        print("  insufficient usable JMD rows; sampling more timings")
+
     print(f"Sampling {args.n_samples} Q rows for read simulation ...")
-    Q_sampled_indices = rng.choice(pass_thres_indices, size=args.n_samples, replace=False)
+    Q_sampled_indices = rng.choice(len(Q), size=args.n_samples, replace=False)
     Q_sampled = Q[Q_sampled_indices]
     
     ########## Reads simulation
@@ -334,6 +345,11 @@ def generate_total_reads(mean, var, size, rng):
 def generate_alt_reads(total_reads_A, total_reads_B, density, true_joint_vafs, rng):
     n_snvs = len(total_reads_A)
     density = np.asarray(density, dtype=float)
+    density = np.maximum(density, 0.0)
+    density_sum = density.sum()
+    if density_sum <= 0:
+        raise ValueError("density must have positive total mass.")
+    density = density / density_sum
     true_joint_vafs = np.asarray(true_joint_vafs, dtype=float)
     n_joint_groups = density.size
     if true_joint_vafs.ndim == 1:

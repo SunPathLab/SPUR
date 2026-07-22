@@ -38,3 +38,26 @@ def test_sample_timing_vectors_can_return_one_hit_and_run_sample():
     assert np.all(timing >= 0)
     assert np.all(timing <= 1)
     assert np.allclose(matrix @ timing, np.ones(matrix.shape[0]), atol=1e-6)
+
+
+def test_sample_timing_vectors_supports_wgd_root_equality():
+    truncal = TruncalEnumerator().enumerate_for_state(4, 2)[0]
+    matrix = np.vstack(
+        (
+            truncal.constraint_matrix,
+            np.array([1, 0, 0, -1, 0, 0]),
+        )
+    )
+    values = np.array([1, 1, 1, 1, 0])
+
+    samples = TimingSampler().sample_timing_vectors_from_constraints(
+        matrix,
+        values,
+        np.random.default_rng(123),
+        n_samples=8,
+        burn_in=5,
+        skips=2,
+        dtype=None,
+    )
+
+    assert np.allclose(samples @ matrix.T, values, atol=1e-8)

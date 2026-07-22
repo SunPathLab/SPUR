@@ -18,7 +18,7 @@ class RouteType(Enum):
 @dataclass(frozen=True)
 class GainHistoryTree:
     major_tree: TreeNode
-    minor_tree: TreeNode
+    minor_tree: TreeNode | None
 
 @dataclass(frozen=True)
 class Truncal:
@@ -32,7 +32,12 @@ class Truncal:
 
     @property
     def n_events(self) -> int:
-        return (self.truncal_major_cn - 1) + (self.truncal_minor_cn - 1)
+        # if LOH occurs before truncal
+        if self.truncal_minor_cn == 0:
+            return self.truncal_major_cn # it is actually truncal_major_cn -1 + 1, the +1 is for the LOH event
+        # otherwise
+        else:
+            return (self.truncal_major_cn - 1) + (self.truncal_minor_cn - 1)
 
     @property
     def canonical_key(self) -> str:
@@ -41,22 +46,31 @@ class Truncal:
     
     @property
     def constraint_matrix(self) -> np.ndarray:
+        
+        # first, get the major block
         major_paths = leaf_to_root_paths(self.tree.major_tree)
-        minor_paths = leaf_to_root_paths(self.tree.minor_tree)
 
         major_block = np.zeros((self.truncal_major_cn, 2 * self.truncal_major_cn - 1), dtype=int)
         for row, path in enumerate(major_paths):
             for col in path:
                 major_block[row, col] = 1
 
-        minor_block = np.zeros((self.truncal_minor_cn, 2 * self.truncal_minor_cn - 1), dtype=int)
-        for row, path in enumerate(minor_paths):
-            for col in path:
-                minor_block[row, col] = 1
+        # if minor tree is None, return only the major block
+        if self.tree.minor_tree is None:
+            return major_block
+        
+        # otherwise, return major and minor block 
+        else:
+            minor_paths = leaf_to_root_paths(self.tree.minor_tree)
+            
+            minor_block = np.zeros((self.truncal_minor_cn, 2 * self.truncal_minor_cn - 1), dtype=int)
+            for row, path in enumerate(minor_paths):
+                for col in path:
+                    minor_block[row, col] = 1
 
-        top_right = np.zeros((major_block.shape[0], minor_block.shape[1]), dtype=int)
-        bottom_left = np.zeros((minor_block.shape[0], major_block.shape[1]), dtype=int)
-        return np.block([[major_block, top_right], [bottom_left, minor_block]])
+            top_right = np.zeros((major_block.shape[0], minor_block.shape[1]), dtype=int)
+            bottom_left = np.zeros((minor_block.shape[0], major_block.shape[1]), dtype=int)
+            return np.block([[major_block, top_right], [bottom_left, minor_block]])
 
 @dataclass(frozen=True)
 class Branch:

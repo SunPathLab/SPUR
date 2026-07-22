@@ -84,5 +84,6 @@ def tree_shape(root: TreeNode) -> str:
     return f"({left},{right})"
 
 
-def union_tree_shape(major_tree: TreeNode, minor_tree: TreeNode) -> str:
-    return f"major={tree_shape(major_tree)};minor={tree_shape(minor_tree)}"
+def union_tree_shape(major_tree: TreeNode, minor_tree: TreeNode | None) -> str:
+    minor_shape = "empty" if minor_tree is None else tree_shape(minor_tree)
+    return f"major={tree_shape(major_tree)};minor={minor_shape}"
