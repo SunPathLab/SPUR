@@ -96,6 +96,12 @@ def build_parser() -> argparse.ArgumentParser:
     
         
     #output
+    parser.add_argument(
+        "--output_name_prefix",
+        type=str,
+        default=None,
+        help="Custom output name prefix for a single input; cannot be used with --batch-process.",
+    )
     parser.add_argument("--output_dir", type=str)
     parser.add_argument(
         "--report-route-score",

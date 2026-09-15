@@ -254,6 +254,24 @@ def test_main_runs_batch_direct_input_paths_without_file_list():
         assert rows_2[0]["input_path"] == str(reads_csv_2)
 
 
+@pytest.mark.parametrize("prefix", ["run", ""])
+@pytest.mark.parametrize(
+    "batch_inputs",
+    [["--batch-input-paths", "a.csv", "b.csv"], ["--batch-filepath-list", "inputs.txt"]],
+)
+def test_main_rejects_output_name_prefix_in_batch_mode(monkeypatch, tmp_path, prefix, batch_inputs):
+    output_dir = tmp_path / "scores"
+    monkeypatch.setattr(sys, "argv", [
+        "spur-codex", "--batch-process", *batch_inputs,
+        "--output_name_prefix", prefix, "--output_dir", str(output_dir),
+    ])
+
+    with pytest.raises(ValueError, match="--output_name_prefix cannot be used with --batch-process"):
+        main()
+
+    assert not output_dir.exists()
+
+
 def test_main_requires_output_dir():
     with TemporaryDirectory() as tmpdir:
         tmp_path = Path(tmpdir)

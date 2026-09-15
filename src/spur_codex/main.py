@@ -83,6 +83,7 @@ def print_run_parameters(args, inputs, seeds, routes, max_truncal_cn) -> None:
     print(f"  float_dtype: {args.float_dtype}")
     print(f"  alt_reads_threshold: {args.alt_reads_threshold}")
     print(f"  total_reads_threshold: {args.total_reads_threshold}")
+    print(f"  output_name_prefix: {args.output_name_prefix}")
     print(f"  output_dir: {args.output_dir}")
     print(f"  report_route_score: {args.report_route_score}", flush=True)
     
@@ -97,6 +98,8 @@ def main() -> int:
     
     # error handling
     if args.batch_process is True:
+        if args.output_name_prefix is not None:
+            raise ValueError("--output_name_prefix cannot be used with --batch-process.")
         if args.batch_filepath_list is None and args.batch_input_paths is None:
             raise ValueError("--batch-filepath-list or --batch-input-paths is required when --batch-process is set.")
         if args.batch_filepath_list is not None and args.batch_input_paths is not None:
@@ -246,12 +249,15 @@ def main() -> int:
         input_path = Path(str(input_record["input_path"]))
         input_filename = input_path.stem # no extension (e.g. no ".tsv" or ".csv")
 
+        # if output_name_prefix is provided, use it; otherwise, use the input filename as the prefix
+        output_name_prefix = f"{args.output_name_prefix}" if args.output_name_prefix else input_filename
+
         # feature table (supporting multiple seeds)
-        feature_df.to_csv(output_dir / f"{input_filename}.tsv", sep="\t", index=False)
+        feature_df.to_csv(output_dir / f"{output_name_prefix}.tsv", sep="\t", index=False)
 
         # route score table (supporting multiple seeds)
         if args.report_route_score:
-            route_score_df.to_csv(output_dir / f"{input_filename}_route_scores.tsv", sep="\t", index=False)
+            route_score_df.to_csv(output_dir / f"{output_name_prefix}_route_scores.tsv", sep="\t", index=False)
     
     return 0
 
