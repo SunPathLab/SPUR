@@ -8,8 +8,6 @@ import numpy as np
 
 from .tree import TreeNode, leaf_to_root_paths, union_tree_shape
 
-
-# route type
 class RouteType(Enum):
     ALL = "all"
     PURE_GAIN = "pure_gain"
@@ -18,18 +16,22 @@ class RouteType(Enum):
 @dataclass(frozen=True)
 class GainHistoryTree:
     major_tree: TreeNode
-    minor_tree: TreeNode | None
+    minor_tree: TreeNode | None   # None indicates LOH
 
 @dataclass(frozen=True)
 class Truncal:
-    truncal_total_cn: int
-    truncal_minor_cn: int
-    tree: GainHistoryTree
-
+    truncal_total_cn: int   # Total CN at the truncal CN state.
+    truncal_minor_cn: int   # Minor CN at the truncal CN state.
+    tree: GainHistoryTree   # Tree of the truncal sub-trajectory
+    
+    # Major CN at the truncal CN state.
     @property
     def truncal_major_cn(self) -> int:
         return self.truncal_total_cn - self.truncal_minor_cn
 
+    # Number of events in the truncal sub-trajectory.
+    # In truncal sub-trajectory,
+    # the number of events is the number of gains (losses are not modeled during truncal)
     @property
     def n_events(self) -> int:
         # if LOH occurs before truncal
@@ -38,7 +40,10 @@ class Truncal:
         # otherwise
         else:
             return (self.truncal_major_cn - 1) + (self.truncal_minor_cn - 1)
-
+    
+    
+    # The canonical key (a string) that uniquely identifies the truncal sub-trajectory.
+    # e.g. truncal_4:1_((1, 2), (3, 4)) means truncal_total_cn=4, truncal_minor_cn=1, major_tree=((1, 2), (3, 4)), minor_tree=None
     @property
     def canonical_key(self) -> str:
         shape = union_tree_shape(self.tree.major_tree, self.tree.minor_tree)

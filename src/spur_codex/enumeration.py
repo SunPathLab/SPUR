@@ -7,7 +7,12 @@ from .route import Branch, GainHistoryTree, Route, RouteType, Truncal
 from .tree import all_full_binary_trees, assign_node_ids
 
 
+# A truncal enumerator that enumerates
+# possible truncal sub routes,
+# given the total CN and the minor CN
 class TruncalEnumerator:
+    
+    # Enumerate all possible truncal trees for a given total CN and minor CN
     def enumerate_for_state(self, total_cn: int, minor_cn: int) -> List[Truncal]:
         if total_cn < 0 or minor_cn < 0:
             raise ValueError("Truncal copy numbers must be nonnegative.")
