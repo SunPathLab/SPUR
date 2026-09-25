@@ -70,6 +70,10 @@ class CopyNumberPair:
         )
         return CopyNumberPair(sample1=sample1, sample2=sample2)
 
+    def is_canonical(self) -> bool:
+        return self == self.canonical()
+
+
     @classmethod
     def from_label(cls, value: str) -> "CopyNumberPair":
         sample1_label, sample2_label = value.split("_")
@@ -90,6 +94,8 @@ def canonical_cn_pair(sample1_cn: tuple[int, int], sample2_cn: tuple[int, int]) 
     ).canonical()
     return pair.sample1_cn_tuple, pair.sample2_cn_tuple
 
+def is_canonical(value: str) -> bool:
+    return CopyNumberPair.from_label(value).is_canonical()
 
 def parse_between_sample_cn(value: str) -> tuple[tuple[int, int], tuple[int, int]]:
     pair = CopyNumberPair.from_label(value).canonical()

@@ -1,0 +1,30 @@
+Warning: CN pair 2:1_4:1 is not canonical. Using canonical form instead.
+Convert to canonical CN pair: (4, 1)_(2, 1)
+SPUR Codex run parameters
+  cn_pair: 2:1_4:1
+  sample1_purity: 0.81397301703257
+  sample2_purity: 0.833884774
+  sample1_prevalence: 1
+  sample2_prevalence: 1
+  max_truncal_cn: 6
+  max_branch_events: 5
+  route_filter: total_branch_events
+  route_filter_threshold: 8
+  mixed_gain_loss_route_definition: any_branch_del
+  n_routes_scored: 1502
+  n_inputs: 1
+  seeds: 75945,85785,7889,94073
+  n_Monte_Carlo_samples: 4000
+  joint_vafs_scale: 0.05
+  burn_in: 200
+  skips: 50
+  float_dtype: float32
+  alt_reads_threshold: 3
+  total_reads_threshold: 15
+  output_name_prefix: None
+  output_dir: run_outputs/permutation_comparison_4_seeds/noncanonical_input_order
+  report_route_score: True
+Scored /home/yunong-xia/Downloads/nonLOH_comparisons/A12_8_45223876_77358890_A12A_M1_21_A12D_M3_41_0.81397301703257_0.833884774.csv seed=75945 runtime_seconds=27.562
+Scored /home/yunong-xia/Downloads/nonLOH_comparisons/A12_8_45223876_77358890_A12A_M1_21_A12D_M3_41_0.81397301703257_0.833884774.csv seed=85785 runtime_seconds=3.782
+Scored /home/yunong-xia/Downloads/nonLOH_comparisons/A12_8_45223876_77358890_A12A_M1_21_A12D_M3_41_0.81397301703257_0.833884774.csv seed=7889 runtime_seconds=3.727
+Scored /home/yunong-xia/Downloads/nonLOH_comparisons/A12_8_45223876_77358890_A12A_M1_21_A12D_M3_41_0.81397301703257_0.833884774.csv seed=94073 runtime_seconds=3.697

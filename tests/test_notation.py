@@ -22,7 +22,8 @@ def test_copy_number_pair_parses_between_sample_cn_and_canonicalizes():
 
 def test_parse_between_sample_cn_returns_total_minor_tuples():
     assert parse_between_sample_cn("4:2_3:1") == ((4, 2), (3, 1))
-
+    assert parse_between_sample_cn("3:1_4:2") == ((4, 2), (3, 1))
+    assert parse_between_sample_cn("4:1_4:2") == ((4, 2), (4, 1))
 
 def test_canonical_cn_pair_preserves_total_minor_tuple_output():
     assert canonical_cn_pair((2, 1), (3, 1)) == ((3, 1), (2, 1))

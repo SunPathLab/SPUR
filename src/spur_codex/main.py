@@ -6,7 +6,7 @@ from pathlib import Path
 
 from .arg_parser import build_parser
 from .enumeration import RouteEnumerator
-from .notation import parse_between_sample_cn
+from .notation import parse_between_sample_cn, is_canonical
 from .scoring import Scorer
 from .route_filter import RouteFilter, filter_routes, split_routes
 
@@ -28,7 +28,7 @@ def process_data(df, alt_thres = 3, depth_thres = 15):
     return r_a[cleaned_idices].to_numpy(), d_a[cleaned_idices].to_numpy(), r_b[cleaned_idices].to_numpy(), d_b[cleaned_idices].to_numpy()
 
 
-def load_input_records(args) -> list[dict[str, str | np.ndarray]]:
+def load_input_records(args, is_cn_pair_canonical: bool) -> list[dict[str, str | np.ndarray]]:
     if not args.batch_process:
         filepaths = [args.input_path]
     elif args.batch_input_paths is not None:
@@ -49,6 +49,9 @@ def load_input_records(args) -> list[dict[str, str | np.ndarray]]:
             alt_thres=args.alt_reads_threshold,
             depth_thres=args.total_reads_threshold,
         )
+        if not is_cn_pair_canonical:
+            # swap the alt and dep reads for sample1 and sample2 to match the canonical CN pair order
+            alt1, dep1, alt2, dep2 = alt2, dep2, alt1, dep1
         inputs.append(
             {
                 "input_path": filepath,
@@ -119,9 +122,28 @@ def main() -> int:
         raise ValueError("--seed-filepath is required when --calculate-uncertainty is set.")
     
     
+    ########## input arguments information
+    sample1_pu = args.sample1_purity
+    sample2_pu = args.sample2_purity
+    sample1_prev = args.sample1_prevalence
+    sample2_prev = args.sample2_prevalence
+    sample1_cn, sample2_cn = parse_between_sample_cn(args.cn_pair)
+    
+    if not is_canonical(args.cn_pair):
+        print(f"Warning: CN pair {args.cn_pair} is not canonical. Using canonical form instead.")
+        sample1_cn, sample2_cn = parse_between_sample_cn(args.cn_pair)
+        print(f"Convert to canonical CN pair: {sample1_cn}_{sample2_cn}")
+        
+        sample1_pu, sample2_pu = sample2_pu, sample1_pu
+        sample1_prev, sample2_prev = sample2_prev, sample1_prev
+    
+    # single input, or batch input
+    inputs = load_input_records(args, is_cn_pair_canonical=is_canonical(args.cn_pair))
+    
     ########## route enumeration
     # first determine the set of truncal_cn for enumeration
-    sample1_cn, sample2_cn = parse_between_sample_cn(args.cn_pair)
+    # sample1_cn, sample2_cn = parse_between_sample_cn(args.cn_pair)
+    
     max_truncal_cn = args.max_truncal_cn
     if max_truncal_cn is None:
         max_truncal_cn = min(max(sample1_cn[0], sample2_cn[0]) + 2, 6)
@@ -164,10 +186,10 @@ def main() -> int:
         raise ValueError("No routes remain after enumeration/filtering.")
     
     
-    ##### route scoring
+    ########## route scoring
     
-    # single input, or batch input
-    inputs = load_input_records(args)
+    # # single input, or batch input
+    # inputs = load_input_records(args)
     
     # single seed, or multiple seeds.
     if args.calculate_uncertainty:
@@ -177,7 +199,7 @@ def main() -> int:
         
     print_run_parameters(args, inputs, seeds, routes, max_truncal_cn)
         
-    ##### Write output
+    ########## Write output
 
     # get the output dir, create if necessary
     output_dir = Path(args.output_dir)
@@ -201,9 +223,8 @@ def main() -> int:
                 alt2=input_record["alt2"],
                 dep2=input_record["dep2"],
                 routes=routes,
-                sample1_pu=args.sample1_purity, sample2_pu=args.sample2_purity,
-                sample1_prevalence=args.sample1_prevalence,
-                sample2_prevalence=args.sample2_prevalence,
+                sample1_pu=sample1_pu, sample2_pu=sample2_pu,
+                sample1_prevalence=sample1_prev, sample2_prevalence=sample2_prev,
                 burn_in=args.burn_in, skips=args.skips,
                 n_samples=args.n_Monte_Carlo_samples,
                 scale=args.joint_vafs_scale,
