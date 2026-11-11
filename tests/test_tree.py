@@ -1,7 +1,7 @@
 import numpy as np
 
-from spur_codex.route import GainHistoryTree, Truncal
-from spur_codex.tree import (
+from spur.route import GainHistoryTree, Truncal
+from spur.tree import (
     TreeNode,
     all_full_binary_trees,
     assign_node_ids,

@@ -1,9 +1,9 @@
 import numpy as np
 
-from spur_codex.compatibility import PureGainCompatibilityChecker
-from spur_codex.enumeration import RouteEnumerator
-from spur_codex.route import RouteType
-from spur_codex.simulation import sample_route_jmd
+from spur.compatibility import PureGainCompatibilityChecker
+from spur.enumeration import RouteEnumerator
+from spur.route import RouteType
+from spur.simulation import sample_route_jmd
 
 
 def test_pure_gain_route_jmd_is_pure_gain_compatible():

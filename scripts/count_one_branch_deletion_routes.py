@@ -4,9 +4,9 @@ import argparse
 import csv
 from pathlib import Path
 
-from spur_codex.enumeration import RouteEnumerator
-from spur_codex.notation import canonical_cn_pair, parse_between_sample_cn, total_minor_label
-from spur_codex.route_filter import split_routes
+from spur.enumeration import RouteEnumerator
+from spur.notation import canonical_cn_pair, parse_between_sample_cn, total_minor_label
+from spur.route_filter import split_routes
 
 
 def main() -> None:

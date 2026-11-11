@@ -1,4 +1,4 @@
-sample1_cn	sample2_cn	sample1_major_cn	sample1_minor_cn	sample2_major_cn	sample2_minor_cn	cn_tsv	max_mrca_cn	max_branch_events	old_spur_complex_routes	spur_codex_both_deletion_routes	matched_routes	old_only_routes	codex_only_routes	count_mismatch_routes	route_sets_equal
+sample1_cn	sample2_cn	sample1_major_cn	sample1_minor_cn	sample2_major_cn	sample2_minor_cn	cn_tsv	max_mrca_cn	max_branch_events	old_spur_complex_routes	spur_both_deletion_routes	matched_routes	old_only_routes	codex_only_routes	count_mismatch_routes	route_sets_equal
 3:1	2:1	2	1	1	1	/home/yunong-xia/Downloads/May_27_real_data_indices.tsv	5	5	198	198	198	0	0	0	True
 3:1	3:1	2	1	2	1	/home/yunong-xia/Downloads/May_27_real_data_indices.tsv	5	5	420	420	420	0	0	0	True
 4:1	2:1	3	1	1	1	/home/yunong-xia/Downloads/May_27_real_data_indices.tsv	6	5	1494	1494	1494	0	0	0	True

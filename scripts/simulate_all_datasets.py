@@ -16,9 +16,14 @@ ROUTE_TYPES = (
 
 
 def main() -> None:
+    
+    # root of the repository
     repo_root = Path(__file__).resolve().parents[1]
 
+    # parse command line arguments
     parser = argparse.ArgumentParser()
+    
+    # file indicating which CN pairs to simulate
     parser.add_argument(
         "--cn-pair-tsv",
         default=str(repo_root / "route_counts" / "route_total_event_threshold8_counts.tsv"),

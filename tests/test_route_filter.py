@@ -1,8 +1,8 @@
 import numpy as np
 
-from spur_codex.enumeration import RouteEnumerator
-from spur_codex.route import RouteType
-from spur_codex.route_filter import collect_h_by_truncal, filter_routes, group_by_truncal, split_routes
+from spur.enumeration import RouteEnumerator
+from spur.route import RouteType
+from spur.route_filter import collect_h_by_truncal, filter_routes, group_by_truncal, split_routes
 
 
 def test_split_routes_matches_route_type_filters():

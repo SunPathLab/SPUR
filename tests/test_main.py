@@ -5,7 +5,7 @@ from tempfile import TemporaryDirectory
 
 import pytest
 
-from spur_codex.main import main
+from spur.main import main
 
 
 def test_main_runs_example_reads_csv_and_writes_feature_tsv():

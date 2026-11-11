@@ -8,9 +8,9 @@ from pathlib import Path
 
 import numpy as np
 
-from spur_codex.enumeration import RouteEnumerator
-from spur_codex.notation import to_major_minor_tuple, total_minor_label
-from spur_codex.tree import union_tree_shape
+from spur.enumeration import RouteEnumerator
+from spur.notation import to_major_minor_tuple, total_minor_label
+from spur.tree import union_tree_shape
 
 
 @dataclass(frozen=True)
@@ -45,8 +45,8 @@ def main() -> None:
     parser.add_argument("--sample2-minor-cn", type=int, default=1)
     parser.add_argument("--max-truncal-cn", type=int, default=6)
     parser.add_argument("--max-branch-events", type=int, default=5)
-    parser.add_argument("--out", default="route_comparison/4_2_vs_3_1_old_spur_vs_codex.tsv")
-    parser.add_argument("--fate-out", default="route_comparison/4_2_vs_3_1_old_spur_vs_codex_fate_vectors.tsv")
+    parser.add_argument("--out", default="route_comparison/4_2_vs_3_1_route_comparison.tsv")
+    parser.add_argument("--fate-out", default="route_comparison/4_2_vs_3_1_route_comparison_fate_vectors.tsv")
     args = parser.parse_args()
 
     sample1_cn = (args.sample1_total_cn, args.sample1_minor_cn)
@@ -78,7 +78,7 @@ def main() -> None:
             fieldnames=[
                 "comparison_status",
                 "present_in_old_spur",
-                "present_in_spur_codex",
+                "present_in_spur",
                 "observed_sample1_cn",
                 "observed_sample2_cn",
                 "truncal_total_cn",
@@ -114,7 +114,7 @@ def main() -> None:
                 {
                     "comparison_status": status,
                     "present_in_old_spur": int(present_old),
-                    "present_in_spur_codex": int(present_codex),
+                    "present_in_spur": int(present_codex),
                     "observed_sample1_cn": total_minor_label(sample1_cn),
                     "observed_sample2_cn": total_minor_label(sample2_cn),
                     "truncal_total_cn": record.truncal_total_cn,
@@ -143,7 +143,7 @@ def main() -> None:
     )
 
     print(f"old_spur_complex_routes\t{len(old_records)}")
-    print(f"spur_codex_both_deletion_routes\t{len(codex_records)}")
+    print(f"spur_both_deletion_routes\t{len(codex_records)}")
     print(f"matched_routes\t{len(set(old_by_key) & set(codex_by_key))}")
     print(f"old_only_routes\t{len(set(old_by_key) - set(codex_by_key))}")
     print(f"codex_only_routes\t{len(set(codex_by_key) - set(old_by_key))}")
@@ -286,7 +286,7 @@ def codex_both_deletion_records(
             continue
         records.append(
             RouteRecord(
-                source="spur_codex",
+                source="spur",
                 truncal_total_cn=route.truncal.truncal_total_cn,
                 truncal_minor_cn=route.truncal.truncal_minor_cn,
                 canonical_tree=route.truncal.canonical_key,

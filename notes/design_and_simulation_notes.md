@@ -2,7 +2,7 @@
 
 Date: 2026-06-04
 
-This note documents the current `SPUR_codex` prototype design and the small simulation workflow.
+This note documents the current `SPUR` prototype design and the small simulation workflow.
 
 ## Design Goal
 
@@ -56,7 +56,7 @@ such as `(3, 1)` mean `(total_cn, minor_cn)`. Major copy number is derived as
 CN-pair parsing is centralized in:
 
 ```text
-src/spur_codex/notation.py
+src/spur/notation.py
 ```
 
 Boundary classes:
@@ -84,7 +84,7 @@ boundaries.
 Implemented in:
 
 ```text
-src/spur_codex/route.py
+src/spur/route.py
 ```
 
 Core objects:
@@ -140,7 +140,7 @@ This avoids the old behavior where each branch was pre-filtered as complex and t
 Implemented in:
 
 ```text
-src/spur_codex/enumeration.py
+src/spur/enumeration.py
 ```
 
 Enumerators:
@@ -194,7 +194,7 @@ biological/simulation-facing rule because it is evaluated on the final route.
 Implemented in:
 
 ```text
-src/spur_codex/route_filter.py
+src/spur/route_filter.py
 ```
 
 The intended workflow is:
@@ -209,7 +209,7 @@ This keeps enumeration broad and moves route selection into a separate module.
 Use `max_truncal_cn` for the shared pre-branch copy-number cap. The command-line
 interface, metadata, and output tables use truncal naming consistently.
 
-Current CLI scoring flow in `src/spur_codex/main.py`:
+Current CLI scoring flow in `src/spur/main.py`:
 
 ```text
 parse --cn-pair
@@ -262,7 +262,7 @@ H_group = group.h_tensor()
 Implemented in:
 
 ```text
-src/spur_codex/encoding.py
+src/spur/encoding.py
 ```
 
 The encoder converts routes into:
@@ -293,7 +293,7 @@ For mixed-gain-loss routes, H is built from explicit route pairs. It is not a re
 Implemented in:
 
 ```text
-src/spur_codex/scoring.py
+src/spur/scoring.py
 ```
 
 The scorer computes route log scores from:
@@ -333,7 +333,7 @@ The posterior calculation is tested using a deterministic two-route example wher
 Implemented in:
 
 ```text
-src/spur_codex/compatibility.py
+src/spur/compatibility.py
 ```
 
 The current compatibility checker preserves the old mathematical meaning:
@@ -382,9 +382,9 @@ Potential future optimizations:
 Implemented in:
 
 ```text
-src/spur_codex/hit_and_run.py
-src/spur_codex/sampling.py
-src/spur_codex/simulation.py
+src/spur/hit_and_run.py
+src/spur/sampling.py
+src/spur/simulation.py
 scripts/simulate_small_datasets.py
 scripts/simulate_datasets.py
 ```

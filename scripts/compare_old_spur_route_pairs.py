@@ -9,7 +9,7 @@ from compare_old_spur_routes import (
     codex_both_deletion_records,
     old_spur_complex_records,
 )
-from spur_codex.notation import canonical_cn_pair, parse_between_sample_cn, total_minor_label
+from spur.notation import canonical_cn_pair, parse_between_sample_cn, total_minor_label
 
 
 def main() -> None:
@@ -19,7 +19,7 @@ def main() -> None:
     parser.add_argument("--max-total-cn", type=int, default=None)
     parser.add_argument("--max-truncal-cn", type=int, default=None)
     parser.add_argument("--max-branch-events", type=int, default=5)
-    parser.add_argument("--out", default="route_comparison/real_data_cn_pairs_old_spur_vs_codex_summary.tsv")
+    parser.add_argument("--out", default="route_comparison/real_data_cn_pairs_route_comparison_summary.tsv")
     args = parser.parse_args()
 
     pairs = observed_cn_pairs_from_tsv(Path(args.cn_tsv), args.max_total_cn)
@@ -63,7 +63,7 @@ def main() -> None:
                 "max_truncal_cn": max_truncal_cn,
                 "max_branch_events": args.max_branch_events,
                 "old_spur_complex_routes": len(old_records),
-                "spur_codex_both_deletion_routes": len(codex_records),
+                "spur_both_deletion_routes": len(codex_records),
                 "matched_routes": matched,
                 "old_only_routes": old_only,
                 "codex_only_routes": codex_only,

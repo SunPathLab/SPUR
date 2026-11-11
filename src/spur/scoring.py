@@ -4,10 +4,10 @@ from typing import Sequence
 import numpy as np
 from scipy.special import gammaln, logsumexp, xlog1py, xlogy
 
-from spur_codex.route import Route
-from spur_codex.route_filter import group_by_truncal
-from spur_codex.sampling import TimingSampler, JointVAFSampler
-from spur_codex.features import RouteScoreResult
+from spur.route import Route
+from spur.route_filter import group_by_truncal
+from spur.sampling import TimingSampler, JointVAFSampler
+from spur.features import RouteScoreResult
 
 
 class Scorer:

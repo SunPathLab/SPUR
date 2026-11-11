@@ -17,8 +17,8 @@ from simulate_parsimony_route import (
     get_wgd_parsimony_branches,
     get_wgd_parsimony_route_constraint_matrix,
 )
-from spur_codex.route import Route
-from spur_codex.sampling import JointVAFSampler, TimingSampler
+from spur.route import Route
+from spur.sampling import JointVAFSampler, TimingSampler
 
 
 PARSIMONY_TYPES = {

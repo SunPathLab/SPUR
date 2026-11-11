@@ -1,4 +1,4 @@
-from spur_codex.notation import CopyNumberPair, CopyNumberState, canonical_cn_pair, parse_between_sample_cn, to_major_minor_tuple, total_minor_label, truncal_key
+from spur.notation import CopyNumberPair, CopyNumberState, canonical_cn_pair, parse_between_sample_cn, to_major_minor_tuple, total_minor_label, truncal_key
 
 
 def test_copy_number_state_uses_total_minor_boundary_notation():

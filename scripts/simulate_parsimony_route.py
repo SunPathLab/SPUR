@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from spur_codex.enumeration import BranchEnumerator, TruncalEnumerator
+from spur.enumeration import BranchEnumerator, TruncalEnumerator
 
 
 # Non-WGD parsimony: the truncal state is produced by allele-specific gains.

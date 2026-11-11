@@ -5,9 +5,9 @@ from pathlib import Path
 
 import pandas as pd
 
-from spur_codex.enumeration import RouteEnumerator
-from spur_codex.notation import parse_between_sample_cn
-from spur_codex.route_filter import RouteFilter
+from spur.enumeration import RouteEnumerator
+from spur.notation import parse_between_sample_cn
+from spur.route_filter import RouteFilter
 
 
 FILTERS = {

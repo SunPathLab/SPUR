@@ -1,7 +1,7 @@
 import numpy as np
 
-from spur_codex.enumeration import TruncalEnumerator
-from spur_codex.sampling import TimingSampler
+from spur.enumeration import TruncalEnumerator
+from spur.sampling import TimingSampler
 
 
 def test_hit_and_run_repeats_fixed_timing_when_null_space_is_empty():

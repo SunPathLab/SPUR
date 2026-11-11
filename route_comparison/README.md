@@ -1,12 +1,12 @@
 # Route Comparison Tables
 
-These files compare old SPUR complex-route generation against `SPUR_codex`
+These files compare old SPUR complex-route generation against `SPUR`
 routes where both post-MRCA branches contain deletions.
 
 ## Kept Tables
 
 ```text
-real_data_cn_pairs_old_spur_vs_codex_summary.tsv
+real_data_cn_pairs_route_comparison_summary.tsv
 ```
 
 Summary across canonical between-sample CN pairs observed in:
@@ -28,7 +28,7 @@ minor_cn = minor_cn
 real_data_cn_pairs_one_branch_deletion_counts.tsv
 ```
 
-Counts `SPUR_codex` complex routes for each real-data CN pair after splitting
+Counts `SPUR` complex routes for each real-data CN pair after splitting
 them into:
 
 ```text

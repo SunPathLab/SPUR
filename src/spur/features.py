@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import numpy as np
 from scipy.special import logsumexp
 
-from spur_codex.route import Route
+from spur.route import Route
 
 @dataclass(frozen=True)
 class RouteScoreResult:

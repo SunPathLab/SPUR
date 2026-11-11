@@ -1,8 +1,8 @@
 import numpy as np
 
-from spur_codex.enumeration import RouteEnumerator
-from spur_codex.features import RouteScoreResult
-from spur_codex.route import RouteType
+from spur.enumeration import RouteEnumerator
+from spur.features import RouteScoreResult
+from spur.route import RouteType
 
 
 def test_route_score_result_score_features_uses_mixed_gain_loss_names():

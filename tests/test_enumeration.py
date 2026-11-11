@@ -1,5 +1,5 @@
-from spur_codex.enumeration import BranchEnumerator, RouteEnumerator, TruncalEnumerator
-from spur_codex.route import RouteType
+from spur.enumeration import BranchEnumerator, RouteEnumerator, TruncalEnumerator
+from spur.route import RouteType
 
 
 def test_branch_enumerator_uses_copy_fate_event_filter():

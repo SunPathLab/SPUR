@@ -1,6 +1,6 @@
 import numpy as np
 
-from spur_codex.sampling import JointVAFSampler, vafEst
+from spur.sampling import JointVAFSampler, vafEst
 
 
 def test_vafEst_matches_old_spur_formula_for_all_multiplicities():

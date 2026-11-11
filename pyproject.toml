@@ -15,7 +15,7 @@ dependencies = [
 ]
 
 [project.scripts]
-spur-codex = "spur_codex.main:main"
+spur-codex = "spur.main:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

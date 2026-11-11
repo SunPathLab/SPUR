@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from spur_codex.enumeration import RouteEnumerator
-from spur_codex.route_filter import RouteFilter
+from spur.enumeration import RouteEnumerator
+from spur.route_filter import RouteFilter
 
 
 def main() -> None:

@@ -15,6 +15,7 @@ from .route_filter import RouteFilter, filter_routes, split_routes
 import numpy as np
 import pandas as pd
 
+
 def process_data(df, alt_thres = 3, depth_thres = 15):
     """Process the original data frame, where there are 4 cols of alt and ref reads. Filter the SNV based on threshold
     """
@@ -205,6 +206,9 @@ def main() -> int:
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    
+    # batch process each input file, 
+    # for each input file, process each seed
     for input_record in inputs:
         # initialize result data frame
         feature_df = None

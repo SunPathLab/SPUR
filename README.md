@@ -30,15 +30,15 @@ Public API tuples use `(total_cn, minor_cn)`. Major copy number is derived as
 ## Structure
 
 ```text
-src/spur_codex/route.py      theoretical route objects and labels
-src/spur_codex/tree.py         generic tree node utilities
-src/spur_codex/enumeration.py  truncal, branch, and paired-route enumeration
-src/spur_codex/route_filter.py route filtering, route splitting, and truncal grouping
-src/spur_codex/encoding.py     route-to-matrix and paired H tensor encoding
-src/spur_codex/hit_and_run.py  GRITIC-derived hit-and-run sampler
-src/spur_codex/sampling.py     timing/VAF sampling
-src/spur_codex/scoring.py      B preparation, T/H/B scoring, and binomial PMF helpers
-src/spur_codex/features.py     score-derived diagnostic features
+src/spur/route.py      theoretical route objects and labels
+src/spur/tree.py         generic tree node utilities
+src/spur/enumeration.py  truncal, branch, and paired-route enumeration
+src/spur/route_filter.py route filtering, route splitting, and truncal grouping
+src/spur/encoding.py     route-to-matrix and paired H tensor encoding
+src/spur/hit_and_run.py  GRITIC-derived hit-and-run sampler
+src/spur/sampling.py     timing/VAF sampling
+src/spur/scoring.py      B preparation, T/H/B scoring, and binomial PMF helpers
+src/spur/features.py     score-derived diagnostic features
 scripts/simulate_small_datasets.py  small route/JMD simulation from real CN pairs
 scripts/main.py  CLI smoke-test for route enumeration, grouping, timing, and H
 ```

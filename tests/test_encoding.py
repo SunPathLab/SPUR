@@ -1,6 +1,6 @@
 import numpy as np
-from spur_codex.encoding import RouteEncoder, build_paired_h
-from spur_codex.enumeration import RouteEnumerator, TruncalEnumerator
+from spur.encoding import RouteEncoder, build_paired_h
+from spur.enumeration import RouteEnumerator, TruncalEnumerator
 
 
 def test_build_paired_h_uses_sample1_total_minor_order():

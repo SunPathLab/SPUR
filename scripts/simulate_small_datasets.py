@@ -8,12 +8,12 @@ from pathlib import Path
 
 import numpy as np
 
-from spur_codex.compatibility import PureGainCompatibilityChecker
-from spur_codex.enumeration import RouteEnumerator
-from spur_codex.notation import parse_between_sample_cn, total_minor_label
-from spur_codex.route import Route
-from spur_codex.route_filter import split_routes
-from spur_codex.simulation import sample_route_jmd
+from spur.compatibility import PureGainCompatibilityChecker
+from spur.enumeration import RouteEnumerator
+from spur.notation import parse_between_sample_cn, total_minor_label
+from spur.route import Route
+from spur.route_filter import split_routes
+from spur.simulation import sample_route_jmd
 
 
 def main() -> None:

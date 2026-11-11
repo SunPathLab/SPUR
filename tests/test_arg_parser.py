@@ -1,4 +1,4 @@
-from spur_codex.arg_parser import build_parser
+from spur.arg_parser import build_parser
 
 
 def test_build_parser_preserves_main_cli_options():

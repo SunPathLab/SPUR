@@ -1,5 +1,5 @@
-from spur_codex.route import Branch, Route, RouteType
-from spur_codex.enumeration import TruncalEnumerator
+from spur.route import Branch, Route, RouteType
+from spur.enumeration import TruncalEnumerator
 
 
 def test_branch_properties():

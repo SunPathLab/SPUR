@@ -7,9 +7,8 @@ from numba import njit
 # Source hit-and-run algorithm:
 # https://github.com/VanLoo-lab/gritic/blob/main/gritic/hitandrun.py
 #
-# Adapted from old SPUR's local copy. The SPUR modification is that random
-# number generation is routed through an explicit rng argument for
-# reproducibility.
+# The SPUR modification is that random number generation 
+# is routed through an explicit rng argument for reproducibility.
 @njit
 def get_random_direction(dimension, rng):
     x = rng.normal(0, 1, size=dimension)

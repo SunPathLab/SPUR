@@ -10,7 +10,7 @@ major = total - minor
 minor = minor
 ```
 
-The current SPUR_codex tree model represents the major and minor allelic
+The current SPUR tree model represents the major and minor allelic
 gain-history trees separately:
 
 ```text
