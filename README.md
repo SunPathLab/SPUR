@@ -1,13 +1,13 @@
 # SPUR
 
-SPUR evaluates whether a between-sample segmental gained aneuploidy (SGA) profile is better explained by a **unidirectional two-terminal SGA trajectory (UDT)** or a **bidirectional trajectory (BDT)**. It enumerates candidate evolutionary trajectories, calculates their read-data likelihood scores, and summarizes support for pure-gain and mixed gain-loss routes.
+SPUR evaluates whether a between-sample segmental gained aneuploidy (SGA) profile is better explained by a **unidirectional two-terminal SGA trajectory (UDT)** or a **bidirectional trajectory (BDT)**. It enumerates candidate evolutionary trajectories, calculates their read-data likelihood scores, and summarizes support for UDT and BDT trajectories.
 
 The current software reports route scores and score-derived features. It does not apply a universal cutoff to emit a single binary UDT/BDT label; users can interpret the reported evidence or use the features in a downstream classifier.
 
-Route groups in the current implementation:
+Trajectory groups in the current implementation:
 
-- **Pure gain:** candidate UDT trajectories with no deletion on either post-MRCA branch.
-- **Mixed gain-loss:** candidate BDT trajectories with a deletion on at least one post-MRCA branch (`any_branch_del`, the default).
+- **UDT:** routes with no deletion on either post-MRCA branch. The current implementation refers to this group as pure gain (`pg`) in some output fields.
+- **BDT:** routes with a deletion on at least one post-MRCA branch. The current implementation refers to this group as mixed gain-loss in some output fields; `any_branch_del` is the default route definition.
 
 Route scores are Monte Carlo log-likelihood estimates for the observed shared SSNV reads under each candidate route. They are not posterior probabilities over routes.
 
@@ -80,11 +80,11 @@ The seed file contains one integer seed per line. Without `--calculate-uncertain
 
 For each input, SPUR writes a feature table named `<input-basename>.tsv`. With uncertainty enabled, it contains one row per seed, including the seed, runtime, and score-derived features such as:
 
-- `best_pg` and `best_mixed_gain_loss`: highest finite route scores in the pure-gain and mixed gain-loss groups.
-- `delta_best_mixed_gain_loss_minus_pg`: difference between those best scores.
-- `percentile_rank`, `score_ratio`, and `frac_mixed_gain_loss_ge_best_pg`: comparisons of route scores to the best pure-gain score.
-- `pg_evidence` and `mixed_gain_loss_evidence`: log-mean evidence summaries for each route group.
-- `n_pg_routes` and `n_mixed_gain_loss_routes`: counts of finite-scoring routes in each group.
+- `best_pg` and `best_mixed_gain_loss`: highest finite route scores for UDT and BDT, respectively. The `pg` and `mixed_gain_loss` names are retained in the current output schema.
+- `delta_best_mixed_gain_loss_minus_pg`: difference between the best BDT and UDT scores.
+- `percentile_rank`, `score_ratio`, and `frac_mixed_gain_loss_ge_best_pg`: compare route scores with the best UDT score. The last field is the fraction of finite BDT route scores at least as high as that score.
+- `pg_evidence` and `mixed_gain_loss_evidence`: log-mean evidence summaries for UDT and BDT routes, respectively.
+- `n_pg_routes` and `n_mixed_gain_loss_routes`: counts of finite-scoring UDT and BDT routes, respectively.
 
 These features summarize the enumerated routes under the selected search settings; they are not calibrated probabilities. Non-finite route scores are omitted from feature calculations.
 
@@ -109,7 +109,7 @@ The most consequential settings control read filtering, the route search space, 
 | `--float-dtype` | `float64` | Numeric precision for score calculations (`float32` or `float64`). |
 | `--seed` / `--seed-filepath` | `1` / unset | Random seed for one run, or a list of seeds when `--calculate-uncertainty` is used. |
 
-Sample purities (`--sample1_purity`, `--sample2_purity`) and prevalences (`--sample1_prevalence`, `--sample2_prevalence`) are also configurable; each defaults to `1`. The current mixed gain-loss definition is `any_branch_del`. An experimental `both_branch_del` option restricts this group to routes with deletions on both branches.
+Sample purities (`--sample1_purity`, `--sample2_purity`) and prevalences (`--sample1_prevalence`, `--sample2_prevalence`) are also configurable; each defaults to `1`. The BDT route-definition option is named `--mixed-gain-loss-route-definition` in the CLI. Its default, `any_branch_del`, includes routes with a deletion on either branch; the experimental `both_branch_del` setting requires deletions on both branches.
 
 ## Manuscript
 
